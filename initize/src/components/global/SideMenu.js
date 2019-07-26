@@ -21,7 +21,7 @@ const useStyles = makeStyles(theme => ({
     },
     sidemenu : {
         height : "100vh",
-        width : "10%",
+        width : "12%",
         position : "fixed",
         backgroundColor : "rgba(0,0,0,0.4)",
     },
@@ -66,24 +66,27 @@ export default function SideMenu(props){
                 </List> */}
 
                 <Paper style={{display:"flex", justifyContent : "center", alignItems : "center", flexDirection : "column", background : "grey", padding : "5%"}}>
-                    <div style={{display:"flex", justifyContent : "space-between", alignItems : "center", flexDirection : "row", width : "75%"}}>
+                    <div style={{display:"flex", justifyContent : "space-between", alignItems : "center", flexDirection : "row", width : "60%"}}>
                         <Avatar className={classes.avatar}>DJ</Avatar>
                         <h3>Drew Johnson</h3>
                     </div>
-                    <ListItem button>
-                        <ListItemIcon><SettingsIcon /></ListItemIcon>
-                        <ListItemText primary="Account Settings" />
-                    </ListItem>
+
+                    <div style={{display:"flex", justifyContent : "space-between", alignItems : "center", flexDirection : "row", width : "50%"}}>
+                        <SettingsIcon />
+                        <p>Account Settings</p>
+                    </div>
                 </Paper>
 
                 <Divider />
                 <List>
-                    {['Boards', 'Messages'].map((text, index) => (
-                    <ListItem button key={text}>
-                        <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-                        <ListItemText primary={text} />
+                    <ListItem button>
+                        <ListItemIcon><InboxIcon /></ListItemIcon>
+                        <ListItemText primary='Boards' />
                     </ListItem>
-                    ))}
+                    <ListItem>
+                        <ListItemIcon><MailIcon /></ListItemIcon>
+                        <ListItemText primary='Messages' />
+                    </ListItem>
                 </List>
             </div>
         </React.Fragment>
