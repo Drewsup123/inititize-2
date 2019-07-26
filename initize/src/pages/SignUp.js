@@ -50,10 +50,9 @@ const styles = theme => ({
 class SignUp extends Component { 
 
     constructor(props) {
-            console.log(props)
         super(props);
         this.state = {
-        isLoading: true
+            isLoading: true
         }
     }
 
@@ -94,7 +93,7 @@ class SignUp extends Component {
                         label="Remember me"
                     /> */}
 
-                    <Button
+                    <Link to="/dashboard" ><Button
                         type="submit"
                         fullWidth
                         variant="contained"
@@ -104,6 +103,7 @@ class SignUp extends Component {
                     
                         {this.state.isLoading ? ' Sign in':'Loadingâ¦' }
                     </Button>
+                    </Link>
 
                     <Button
                         fullWidth
@@ -129,7 +129,7 @@ class SignUp extends Component {
 
 
 SignUp.propTypes = {
-  classes: PropTypes.object.isRequired,
+    classes: PropTypes.object.isRequired,
 };
 
 export default withStyles(styles)(SignUp);
