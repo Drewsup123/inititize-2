@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 // Router Imports
-import { Route } from 'react-router-dom';
+import { Route, withRouter } from 'react-router-dom';
 import {connect} from 'react-redux';
 // Page Imports
 import LandingPage from './pages/LandingPage';
@@ -10,10 +10,10 @@ import Dashboard from './pages/Dashboard';
 //Component Imports
 import SideMenu from './components/global/SideMenu';
 
-function App() {
+function App(props) {
   return (
     <div className="App">
-      <Route path="/" render={() => <SideMenu />} />
+      <Route path="/" render={() => <SideMenu {...props}/>} />
       <Route exact path="/" render={() => <LandingPage />} />
       <Route path="/authenticate" render={() => <SignUp />} />
       <div className="dashboard-content">
@@ -23,4 +23,4 @@ function App() {
   );
 }
 
-export default App;
+export default withRouter(App);

@@ -44,8 +44,11 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-export default function SideMenu(){
+export default function SideMenu(props){
     const classes = useStyles();
+    if(props.location.pathname === '/' || props.location.pathname === "/authenticate"){
+        return null;
+    }
     return(
         <div className={classes.sidemenu}>
             <div className={classes.toolbar} >
