@@ -114,37 +114,6 @@ class Dashboard extends React.Component{
                         </SortableContainer2>
                     </Table>
                 </Paper>
-
-                {/* <Paper>
-                    <Table>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Task</TableCell>
-                                <TableCell>Priority</TableCell>
-                                <TableCell>User</TableCell>
-                                <TableCell>Status</TableCell>
-                                <TableCell>Description</TableCell>
-                                <TableCell>Notes</TableCell>
-                                <TableCell>Actions</TableCell>
-                            </TableRow>
-                        </TableHead>
-
-                        <TableBody>
-                        {tempRows.map((row, index) => (
-                            <TableRow key={index}>
-                            <TableCell component="th" scope="row">
-                                {row.title}
-                            </TableCell>
-                            <TableCell>{row.priority}</TableCell>
-                            <TableCell>{row.user}</TableCell>
-                            <TableCell>{row.status}</TableCell>
-                            <TableCell>{row.description}</TableCell>
-                            <TableCell>{row.notes}</TableCell>
-                            </TableRow>
-                        ))}
-                        </TableBody>
-                    </Table>
-                </Paper> */}
             </div>
         );
     }
