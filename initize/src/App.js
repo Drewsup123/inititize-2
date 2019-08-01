@@ -7,6 +7,7 @@ import {connect} from 'react-redux';
 import LandingPage from './pages/LandingPage';
 import SignUp from './pages/SignUp';
 import Dashboard from './pages/Dashboard';
+import AccountSettings from './pages/accountSettings';
 //Component Imports
 import SideMenu from './components/global/SideMenu';
 
@@ -18,6 +19,7 @@ function App(props) {
       <Route path="/authenticate" render={() => <SignUp {...props}/>} />
       <div className="dashboard-content">
         <Route path="/dashboard" render={() => <Dashboard />} />
+        <Route path="/account-settings" render={() => <AccountSettings />} />
       </div>
     </div>
   );

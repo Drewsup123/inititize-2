@@ -11,6 +11,14 @@ import MailIcon from '@material-ui/icons/Mail';
 import TopNav from './AppBar';
 import Paper from '@material-ui/core/Paper'
 import Avatar from '@material-ui/core/Avatar';
+import Button from "@material-ui/core/Button";
+import AddIcon from "@material-ui/icons/Add";
+import TextField from '@material-ui/core/TextField';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -48,7 +56,8 @@ const useStyles = makeStyles(theme => ({
 
 export default function SideMenu(props){
     const classes = useStyles();
-    const [tempArr, setTempArr] = React.useState([1,2,3,4,5,6,7])
+    const [tempArr, setTempArr] = React.useState([1,2,3,4,5,6,7]);
+    const [open, setOpen] = React.useState(false);
     if(props.location.pathname === '/' || props.location.pathname === "/authenticate"){
         return null;
     }
@@ -57,20 +66,11 @@ export default function SideMenu(props){
             <TopNav />
             <div className={classes.sidemenu}>
                 <div className={classes.sidemenuBoards}>
-                    <Avatar className={classes.avatar}>+</Avatar>
+                <Avatar onClick={() => setOpen(true)} style={{backgroundColor:"grey", cursor : "pointer"}} ><AddIcon /></Avatar>
                     {tempArr.map(element => <Avatar className={classes.avatar}>{element}</Avatar>)}
                 </div>
                 <div className={classes.sidemenuContent}>
                     <Divider />
-                    {/* <List>
-                        {['Boards', 'Messages', 'Account Settings'].map((text, index) => (
-                        <ListItem button key={text}>
-                            <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-                            <ListItemText primary={text} />
-                        </ListItem>
-                        ))}
-                    </List> */}
-
                     <Paper style={{display:"flex", justifyContent : "center", alignItems : "center", flexDirection : "column", background : "grey", padding : "2%", width : "80%"}}>
                         <div style={{display:"flex", justifyContent : "space-between", alignItems : "center", flexDirection : "row", width : "60%"}}>
                             <Avatar className={classes.avatar}>DJ</Avatar>
@@ -96,6 +96,31 @@ export default function SideMenu(props){
                     </List>
                 </div>
             </div>
+            {/* modal */}
+            <Dialog open={open} onClose={() => setOpen(false)} aria-labelledby="form-dialog-title">
+                <DialogTitle id="form-dialog-title">Create A Board</DialogTitle>
+                <DialogContent>
+                <DialogContentText>
+                    Create A new board for yourself or for your team.
+                </DialogContentText>
+                <TextField
+                    autoFocus
+                    margin="dense"
+                    id="name"
+                    label="Board Name"
+                    type="text"
+                    fullWidth
+                />
+                </DialogContent>
+                <DialogActions>
+                <Button onClick={() => setOpen(false)} color="primary">
+                    Cancel
+                </Button>
+                <Button onClick={() => setOpen(false)} color="primary">
+                    Create
+                </Button>
+                </DialogActions>
+            </Dialog>
         </React.Fragment>
     );
 }

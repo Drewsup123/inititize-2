@@ -74,7 +74,8 @@ class SignUp extends Component {
         console.log(this.state);
     }
 
-    handleSignUp = () => {
+    handleSignUp = (e) => {
+        e.preventDefault();
         let {email, password, username} = this.state;
         if(email && password && username){
             firebase.auth().createUserWithEmailAndPassword(email, password)
@@ -104,6 +105,27 @@ class SignUp extends Component {
         }
     }
 
+    handleSignIn = (e) => {
+        e.preventDefault();
+        this.setState({isLoadingSignIn : true})
+        const {email, password} = this.state;
+        if(email && password){
+            firebase.auth().signInWithEmailAndPassword(email, password)
+            .then(res => {
+                firebase.database().ref('/users/' + res.user.uid).once('value').then(async snap => {
+                    await this.props.handleLogin(snap.val());
+                    snap.val().boards ? this.props.history.push('/dashboard') : this.props.history.push("/account-settings")
+                })
+            })
+            .catch(err => {
+                this.setState({error : err.message})
+            })
+        }else{
+            this.setState({error : "Please fill out both email and password fields when signing in."})
+        }
+        this.setState({isLoadingSignIn : false})
+    }
+
     render() {
         return (
             <React.Fragment> 
@@ -131,7 +153,7 @@ class SignUp extends Component {
                     <LockOutlinedIcon />
                 </Avatar>
 
-                <form className={this.props.classes.form} onSubmit={this.handleLogin}>
+                <form className={this.props.classes.form}>
 
                     <FormControl margin="normal" required fullWidth>
                         <InputLabel htmlFor="email">Email Address</InputLabel>
@@ -171,35 +193,30 @@ class SignUp extends Component {
                     <LockOutlinedIcon />
                 </Avatar>
 
-                <form className={this.props.classes.form} onSubmit={this.handleLogin}>
+                <form className={this.props.classes.form}>
 
                     <FormControl margin="normal" required fullWidth>
                         <InputLabel htmlFor="email">Email Address</InputLabel>
-                        <Input onChange={this.handleChange} id="email" name="email" autoComplete="email" autoFocus />
+                        <Input onChange={this.handleChange} name="email" autoComplete="email" autoFocus />
                     </FormControl>
 
                     <FormControl margin="normal" required fullWidth>
                         <InputLabel htmlFor="password">Password</InputLabel>
-                        <Input onChange={this.handleChange} name="password" type="password" id="password" autoComplete="current-password" />
+                        <Input onChange={this.handleChange} name="password" type="password" autoComplete="current-password" />
                     </FormControl>
 
-                    {/* <FormControlLabel
-                        control={<Checkbox value="remember" color="primary" />}
-                        label="Remember me"
-                    /> */}
-
-                    <Link to="/dashboard" ><Button
+                    <Button
                         type="submit"
                         fullWidth
                         variant="contained"
                         color="primary"
                         className={this.props.classes.submit}
                         disabled={this.state.isLoading}
+                        onClick={this.handleSignIn}
                     >
                     
                     {this.state.isLoadingSignIn ? <CircularProgress color="white"/>:'Sign In' }
                     </Button>
-                    </Link>
 
                 </form>
                 
