@@ -57,6 +57,7 @@ export default function SideMenu(props){
             <TopNav />
             <div className={classes.sidemenu}>
                 <div className={classes.sidemenuBoards}>
+                    <Avatar className={classes.avatar}>+</Avatar>
                     {tempArr.map(element => <Avatar className={classes.avatar}>{element}</Avatar>)}
                 </div>
                 <div className={classes.sidemenuContent}>

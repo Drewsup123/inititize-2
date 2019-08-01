@@ -15,7 +15,7 @@ function App(props) {
     <div className="App">
       <Route path="/" render={() => <SideMenu {...props}/>} />
       <Route exact path="/" render={() => <LandingPage />} />
-      <Route path="/authenticate" render={() => <SignUp />} />
+      <Route path="/authenticate" render={() => <SignUp {...props}/>} />
       <div className="dashboard-content">
         <Route path="/dashboard" render={() => <Dashboard />} />
       </div>

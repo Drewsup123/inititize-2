@@ -10,11 +10,11 @@ import Paper from '@material-ui/core/Paper';
 import AddIcon from '@material-ui/icons/Add';
 import DeleteIcon from '@material-ui/icons/Delete'
 
-const DragHandle = sortableHandle(() => <span>::</span>);
+const DragHandle = sortableHandle(() => <span style={{cursor : "row-resize"}}>:::</span>);
 
 const SortableContainer2 = sortableContainer(({children}) => {
     return(
-            <TableBody>
+            <TableBody style={{width : "100%"}}>
                 {children}
             </TableBody>
     )
@@ -22,8 +22,8 @@ const SortableContainer2 = sortableContainer(({children}) => {
 
 const SortableItem2 = sortableElement(({value}) =>
         <React.Fragment>
-            <TableRow>
-                <TableCell><DragHandle /></TableCell>
+            <TableRow style={{width : "100%"}}>
+                <TableCell><DragHandle/></TableCell>
                 <TableCell component="th" scope="row">
                     {value.title}
                 </TableCell>
@@ -99,6 +99,7 @@ class Dashboard extends React.Component{
                     <Table>
                         <TableHead>
                             <TableRow>
+                                <TableCell></TableCell>
                                 <TableCell>Task</TableCell>
                                 <TableCell>Priority</TableCell>
                                 <TableCell>User</TableCell>

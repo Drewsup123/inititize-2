@@ -12,6 +12,10 @@ import Typography from '@material-ui/core/Typography';
 import withStyles from '@material-ui/core/styles/withStyles';
 import { Link } from 'react-router-dom';
 import { AppBar, Toolbar } from '@material-ui/core';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import * as firebase from "firebase"
+import {connect} from 'react-redux';
+import {handleSignup, handleLogin} from '../redux/actions';
 
 const styles = theme => ({
     main: {
@@ -36,6 +40,10 @@ const styles = theme => ({
         margin: theme.spacing.unit,
         backgroundColor: theme.palette.secondary.main,
     },
+    avatar2: {
+        margin: theme.spacing.unit,
+        backgroundColor: theme.palette.primary.main,
+    },
     form: {
         width: '100%', // Fix IE 11 issue.
         marginTop: theme.spacing.unit,
@@ -52,7 +60,47 @@ class SignUp extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            isLoading: true
+            isLoadingSignIn: false,
+            isLoadingSignUp: false,
+            email : "",
+            password : "",
+            username : "",
+            error : "",
+        }
+    }
+
+    handleChange = e => {
+        this.setState({[e.target.name] : e.target.value});
+        console.log(this.state);
+    }
+
+    handleSignUp = () => {
+        let {email, password, username} = this.state;
+        if(email && password && username){
+            firebase.auth().createUserWithEmailAndPassword(email, password)
+            .then(res => {
+                const user = {
+                    email : res.user.email,
+                    uid : res.user.uid,
+                    username : username,
+                    boards : [],
+                    dateJoined : Date.now(),
+                    profilePicture : "https://banner2.kisspng.com/20180722/gfc/kisspng-user-profile-2018-in-sight-user-conference-expo-5b554c0968c377.0307553315323166814291.jpg",
+                };
+                firebase.database().ref('/users/' + user.uid).set(user).then(async () => {
+                    await this.props.handleSignup(user);
+                    this.props.history.push('/dashboard');
+                })
+                .catch(err => {
+                    this.setState({error : "Sorry there was a problem signing you in"});
+                    console.log(err)
+                })
+            })
+            .catch(err => {
+                this.setState({error : err.message})
+            })
+        }else{
+            this.setState({error : "All fields must be filled in when making an account."})
         }
     }
 
@@ -70,7 +118,14 @@ class SignUp extends Component {
                 </Toolbar>
             </AppBar>
 
-            <Paper className={this.props.classes.paper} >
+            <Paper className={this.props.classes.paper}>
+                {this.state.error ? 
+                <Paper>
+                    <Typography variant="h6" color="secondary" noWrap >
+                        {this.state.error}
+                    </Typography>
+                </Paper> 
+                : null}
 
                 <Avatar className={this.props.classes.avatar}>
                     <LockOutlinedIcon />
@@ -80,12 +135,52 @@ class SignUp extends Component {
 
                     <FormControl margin="normal" required fullWidth>
                         <InputLabel htmlFor="email">Email Address</InputLabel>
-                        <Input id="email" name="email" autoComplete="email" autoFocus />
+                        <Input onChange={this.handleChange} id="email" name="email" autoComplete="email" autoFocus />
+                    </FormControl>
+
+                    <FormControl margin="normal" required fullWidth>
+                        <InputLabel htmlFor="email">Username</InputLabel>
+                        <Input onChange={this.handleChange} id="username" name="username" autoComplete="username" autoFocus />
                     </FormControl>
 
                     <FormControl margin="normal" required fullWidth>
                         <InputLabel htmlFor="password">Password</InputLabel>
-                        <Input name="password" type="password" id="password" autoComplete="current-password" />
+                        <Input onChange={this.handleChange} name="password" type="password" id="password" autoComplete="current-password" />
+                    </FormControl>
+
+                    {/* <FormControlLabel
+                        control={<Checkbox value="remember" color="primary" />}
+                        label="Remember me"
+                    /> */}
+
+                    <Button
+                        fullWidth
+                        variant="contained"
+                        color="secondary"
+                        className={this.props.classes.submit}
+                        disabled={this.state.isLoading}
+                        onClick={this.handleSignUp}
+                    >
+                    {this.state.isLoadingSignUp ? <CircularProgress color="white"/>:'Sign Up' }
+                    </Button>
+
+                </form>
+
+                <p>or</p>
+                <Avatar className={this.props.classes.avatar2}>
+                    <LockOutlinedIcon />
+                </Avatar>
+
+                <form className={this.props.classes.form} onSubmit={this.handleLogin}>
+
+                    <FormControl margin="normal" required fullWidth>
+                        <InputLabel htmlFor="email">Email Address</InputLabel>
+                        <Input onChange={this.handleChange} id="email" name="email" autoComplete="email" autoFocus />
+                    </FormControl>
+
+                    <FormControl margin="normal" required fullWidth>
+                        <InputLabel htmlFor="password">Password</InputLabel>
+                        <Input onChange={this.handleChange} name="password" type="password" id="password" autoComplete="current-password" />
                     </FormControl>
 
                     {/* <FormControlLabel
@@ -99,20 +194,12 @@ class SignUp extends Component {
                         variant="contained"
                         color="primary"
                         className={this.props.classes.submit}
+                        disabled={this.state.isLoading}
                     >
                     
-                        {this.state.isLoading ? ' Sign in':'Loadingâ¦' }
+                    {this.state.isLoadingSignIn ? <CircularProgress color="white"/>:'Sign In' }
                     </Button>
                     </Link>
-
-                    <Button
-                        fullWidth
-                        variant="contained"
-                        color="secondary"
-                        className={this.props.classes.submit}
-                    >
-                    Sign up
-                    </Button>
 
                 </form>
                 
@@ -132,5 +219,11 @@ SignUp.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(SignUp);
+const mapStateToProps = state => {
+    return {
+        loggedIn : state.loggedIn
+    };
+};
+
+export default connect(mapStateToProps, {handleSignup, handleLogin})(withStyles(styles)(SignUp))
 

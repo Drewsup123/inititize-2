@@ -1,5 +1,5 @@
 // Importing actions here
-import {} from './actions';
+import {SIGN_UP} from './actions';
 
 const initialState = {
     loggedIn : false,
@@ -9,7 +9,8 @@ const initialState = {
 export const reducer = (state = initialState, action) => {
 
     switch(action.type){
-        
+        case SIGN_UP:
+            return {...state, user : action.payload, loggedIn : true};
         default:
             return state;
     }
