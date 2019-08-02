@@ -19,6 +19,9 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import * as firebase from 'firebase';
+import {connect} from 'react-redux';
+import { array } from 'prop-types';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -54,10 +57,41 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-export default function SideMenu(props){
+function SideMenu(props){
     const classes = useStyles();
     const [tempArr, setTempArr] = React.useState([1,2,3,4,5,6,7]);
     const [open, setOpen] = React.useState(false);
+    const [name, setName] = React.useState(false);
+
+    const createBoard = () => {
+        const key = firebase.database().ref('/boards').push().key;
+        firebase.database().ref('/boards/' + key).set({
+            boardName : name,
+            createdAt : Date.now(),
+            id : key,
+            owner : {
+                username : props.user.username,
+                profilePicture : props.user.profilePicture,
+                email : props.user.email,
+                uid : props.user.uid
+            },
+            users : [],
+            plan : "FREE"
+        }).then(res => {
+            firebase.database().ref('/users/' + props.user.uid + '/boards').push().set(key).then(res => {
+                alert("success")
+            }).catch(err => {
+                alert("Error");
+                console.log(err)
+            })
+        })
+        .catch(err => {
+            alert("Error")
+            console.log(err)
+        })
+        setOpen(false);
+    }
+
     if(props.location.pathname === '/' || props.location.pathname === "/authenticate"){
         return null;
     }
@@ -110,13 +144,14 @@ export default function SideMenu(props){
                     label="Board Name"
                     type="text"
                     fullWidth
+                    onChange={(e) => setName(e.target.value)}
                 />
                 </DialogContent>
                 <DialogActions>
                 <Button onClick={() => setOpen(false)} color="primary">
                     Cancel
                 </Button>
-                <Button onClick={() => setOpen(false)} color="primary">
+                <Button onClick={() => createBoard()} color="primary">
                     Create
                 </Button>
                 </DialogActions>
@@ -124,3 +159,11 @@ export default function SideMenu(props){
         </React.Fragment>
     );
 }
+
+const mapStateToProps = state => {
+    return {
+        user : state.user,
+    }
+}
+
+export default connect(mapStateToProps)(SideMenu)
