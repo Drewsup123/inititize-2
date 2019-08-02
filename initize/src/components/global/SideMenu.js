@@ -22,7 +22,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import * as firebase from 'firebase';
 import {connect} from 'react-redux';
 import Tooltip from '@material-ui/core/Tooltip';
-import {createdBoard} from "../../redux/actions";
+import {createdBoard, changeSelected} from "../../redux/actions";
 import {Link} from "react-router-dom";
 import moment from 'moment'
 
@@ -102,7 +102,11 @@ function SideMenu(props){
         setOpen(false);
     }
 
-    const showDate = date => `${moment(date).format("MMM Do YY")}`
+    const showDate = date => `${moment(date).format("MMM Do YY")}`;
+
+    const changeSelected = board => {
+        props.changeSelected(board);
+    }
 
     if(props.location.pathname === '/' || props.location.pathname === "/authenticate"){
         return null;
@@ -115,8 +119,14 @@ function SideMenu(props){
                 <div className={classes.sidemenuBoards}>
                 <Avatar onClick={() => setOpen(true)} style={{backgroundColor:"grey", cursor : "pointer"}} ><AddIcon /></Avatar>
                     {boards.map(board => 
-                    <Tooltip title={board.boardName} placement="right">
-                        <Avatar style={{cursor:"pointer"}} className={classes.avatar}>{board.boardName[0]}</Avatar>
+                    <Tooltip key={board.id} title={board.boardName} placement="right">
+                        <Avatar 
+                            style={{cursor:"pointer"}} 
+                            className={classes.avatar}
+                            onClick={() => changeSelected(board)}
+                        >
+                            {board.boardName[0]}
+                        </Avatar>
                     </Tooltip>
                     )}
                 </div>
@@ -185,4 +195,4 @@ const mapStateToProps = state => {
     }
 }
 
-export default connect(mapStateToProps, {createdBoard})(SideMenu)
+export default connect(mapStateToProps, {createdBoard, changeSelected})(SideMenu)
