@@ -15,7 +15,7 @@ import { AppBar, Toolbar } from '@material-ui/core';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import * as firebase from "firebase"
 import {connect} from 'react-redux';
-import {handleSignup, handleLogin} from '../redux/actions';
+import {handleSignup, handleLogin, changeSelected} from '../redux/actions';
 
 const styles = theme => ({
     main: {
@@ -90,7 +90,7 @@ class SignUp extends Component {
                 };
                 firebase.database().ref('/users/' + user.uid).set(user).then(async () => {
                     await this.props.handleSignup(user);
-                    this.props.history.push('/dashboard');
+                    this.props.history.push('/account-settings');
                 })
                 .catch(err => {
                     this.setState({error : "Sorry there was a problem signing you in"});
@@ -114,7 +114,13 @@ class SignUp extends Component {
             .then(res => {
                 firebase.database().ref('/users/' + res.user.uid).once('value').then(async snap => {
                     await this.props.handleLogin(snap.val());
-                    snap.val().boards ? this.props.history.push('/dashboard') : this.props.history.push("/account-settings")
+                    if(snap.val().boards){
+                        const selected = Object.keys(snap.val().boards)[0]
+                        this.props.changeSelected(snap.val().boards[selected]);
+                        this.props.history.push('/dashboard/' + selected)
+                    }else{
+                        this.props.history.push("/account-settings");
+                    } 
                 })
             })
             .catch(err => {
@@ -238,9 +244,9 @@ SignUp.propTypes = {
 
 const mapStateToProps = state => {
     return {
-        loggedIn : state.loggedIn
+        loggedIn : state.loggedIn,
     };
 };
 
-export default connect(mapStateToProps, {handleSignup, handleLogin})(withStyles(styles)(SignUp))
+export default connect(mapStateToProps, {handleSignup, handleLogin, changeSelected})(withStyles(styles)(SignUp))
 

@@ -8,7 +8,9 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import AddIcon from '@material-ui/icons/Add';
-import DeleteIcon from '@material-ui/icons/Delete'
+import DeleteIcon from '@material-ui/icons/Delete';
+import {connect} from 'react-redux';
+import * as firebase from 'firebase';
 
 const DragHandle = sortableHandle(() => <span style={{cursor : "row-resize"}}>:::</span>);
 
@@ -41,7 +43,6 @@ class Dashboard extends React.Component{
     constructor(){
         super();
         this.state = {
-            temp_Array : ['Item 1', 'Item 2', 'Item 3', 'Item 4', 'Item 5', 'Item 6'],
             tempRows : [
                 {
                     title : "test",
@@ -77,6 +78,10 @@ class Dashboard extends React.Component{
                 },
             ]
         }
+    }
+
+    componentDidMount(){
+
     }
 
     onSortEnd = ({oldIndex, newIndex}) => {
@@ -120,4 +125,12 @@ class Dashboard extends React.Component{
     }
 }
 
-export default Dashboard;
+const mapStateToProps = state => {
+    return {
+        user : state.user,
+        selectedBoard : state.selectedBoard,
+        boards : state.boards
+    }
+}
+
+export default connect(mapStateToProps)(Dashboard);

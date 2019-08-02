@@ -18,7 +18,7 @@ function App(props) {
       <Route exact path="/" render={() => <LandingPage />} />
       <Route path="/authenticate" render={() => <SignUp {...props}/>} />
       <div className="dashboard-content">
-        <Route path="/dashboard" render={() => <Dashboard />} />
+        <Route path="/dashboard/:id" render={() => <Dashboard />} />
         <Route path="/account-settings" render={() => <AccountSettings />} />
       </div>
     </div>
