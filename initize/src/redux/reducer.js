@@ -1,5 +1,5 @@
 // Importing actions here
-import {SIGN_UP, LOGIN, CREATED_BOARD} from './actions';
+import {SIGN_UP, LOGIN, CREATED_BOARD, CHANGE_SELECTED} from './actions';
 
 const initialState = {
     loggedIn : false,
@@ -12,6 +12,8 @@ const initialState = {
 export const reducer = (state = initialState, action) => {
 
     switch(action.type){
+        case CHANGE_SELECTED:
+            return {...state, selectedBoard : action.payload}
         case CREATED_BOARD:
             return {...state, boards : [...state.boards, action.payload]}
         case SIGN_UP:

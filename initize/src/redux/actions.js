@@ -21,6 +21,10 @@ export const createdBoard = (payload) => dispatch => {
     dispatch({type:CREATED_BOARD, payload:payload})
 }
 
+export const changeSelected = payload => dispatch => {
+    dispatch({type:CHANGE_SELECTED, payload : payload})
+}
+
 // export const addBoardId = payload => dispatch => {
 //   dispatch({type: ADDBOARDID, payload: payload})
 // }
