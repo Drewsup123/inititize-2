@@ -21,7 +21,10 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import * as firebase from 'firebase';
 import {connect} from 'react-redux';
-import { array } from 'prop-types';
+import Tooltip from '@material-ui/core/Tooltip';
+import {createdBoard} from "../../redux/actions";
+import {Link} from "react-router-dom";
+import moment from 'moment'
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -59,7 +62,6 @@ const useStyles = makeStyles(theme => ({
 
 function SideMenu(props){
     const classes = useStyles();
-    const [tempArr, setTempArr] = React.useState([1,2,3,4,5,6,7]);
     const [open, setOpen] = React.useState(false);
     const [name, setName] = React.useState(false);
 
@@ -83,8 +85,11 @@ function SideMenu(props){
                 boardImage : "",
                 boardName : name
             }).then(res => {
-                alert("success")
-                console.log("response", res)
+                props.createdBoard({
+                    id : key,
+                    boardImage : "",
+                    boardName : name
+                })
             }).catch(err => {
                 alert("Error");
                 console.log(err);
@@ -97,6 +102,8 @@ function SideMenu(props){
         setOpen(false);
     }
 
+    const showDate = date => `${moment(date).format("MMM Do YY")}`
+
     if(props.location.pathname === '/' || props.location.pathname === "/authenticate"){
         return null;
     }
@@ -107,20 +114,25 @@ function SideMenu(props){
             <div className={classes.sidemenu}>
                 <div className={classes.sidemenuBoards}>
                 <Avatar onClick={() => setOpen(true)} style={{backgroundColor:"grey", cursor : "pointer"}} ><AddIcon /></Avatar>
-                    {boards.map(board => <Avatar className={classes.avatar}>{board.boardName[0]}</Avatar>)}
+                    {boards.map(board => 
+                    <Tooltip title={board.boardName} placement="right">
+                        <Avatar style={{cursor:"pointer"}} className={classes.avatar}>{board.boardName[0]}</Avatar>
+                    </Tooltip>
+                    )}
                 </div>
                 <div className={classes.sidemenuContent}>
                     <Divider />
                     <Paper style={{display:"flex", justifyContent : "center", alignItems : "center", flexDirection : "column", background : "grey", padding : "2%", width : "80%"}}>
                         <div style={{display:"flex", justifyContent : "space-between", alignItems : "center", flexDirection : "row", width : "60%"}}>
-                            <Avatar className={classes.avatar}>DJ</Avatar>
-                            <h3>Drew Johnson</h3>
+                            <Avatar className={classes.avatar} src={props.user.profilePicture}/>
+                            <h3>{props.user.username}</h3>
                         </div>
-
+                        <p>Member since {showDate(props.user.dateJoined)}</p>
+                        <Link to="/account-settings" style={{color : "black", textDecoration : "none"}}>
                         <div style={{display:"flex", justifyContent : "space-between", alignItems : "center", flexDirection : "row", width : "50%"}}>
                             <SettingsIcon />
-                            <p>Account Settings</p>
                         </div>
+                        </Link>
                     </Paper>
 
                     <Divider />
@@ -173,4 +185,4 @@ const mapStateToProps = state => {
     }
 }
 
-export default connect(mapStateToProps)(SideMenu)
+export default connect(mapStateToProps, {createdBoard})(SideMenu)
