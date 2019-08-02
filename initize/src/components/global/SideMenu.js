@@ -114,7 +114,7 @@ function SideMenu(props){
     const {user, boards} = props;
     return(
         <React.Fragment>
-            <TopNav />
+            <TopNav selectedBoard={props.selectedBoard} />
             <div className={classes.sidemenu}>
                 <div className={classes.sidemenuBoards}>
                 <Avatar onClick={() => setOpen(true)} style={{backgroundColor:"grey", cursor : "pointer"}} ><AddIcon /></Avatar>
@@ -192,6 +192,7 @@ const mapStateToProps = state => {
     return {
         user : state.user,
         boards : state.boards,
+        selectedBoard : state.selectedBoard,
     }
 }
 
