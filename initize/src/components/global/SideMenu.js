@@ -78,11 +78,16 @@ function SideMenu(props){
             users : [],
             plan : "FREE"
         }).then(res => {
-            firebase.database().ref('/users/' + props.user.uid + '/boards').push().set(key).then(res => {
+            firebase.database().ref('/users/' + props.user.uid + '/boards').push().set({
+                id : key,
+                boardImage : "",
+                boardName : name
+            }).then(res => {
                 alert("success")
+                console.log("response", res)
             }).catch(err => {
                 alert("Error");
-                console.log(err)
+                console.log(err);
             })
         })
         .catch(err => {
@@ -95,13 +100,14 @@ function SideMenu(props){
     if(props.location.pathname === '/' || props.location.pathname === "/authenticate"){
         return null;
     }
+    const {user, boards} = props;
     return(
         <React.Fragment>
             <TopNav />
             <div className={classes.sidemenu}>
                 <div className={classes.sidemenuBoards}>
                 <Avatar onClick={() => setOpen(true)} style={{backgroundColor:"grey", cursor : "pointer"}} ><AddIcon /></Avatar>
-                    {tempArr.map(element => <Avatar className={classes.avatar}>{element}</Avatar>)}
+                    {boards.map(board => <Avatar className={classes.avatar}>{board.boardName[0]}</Avatar>)}
                 </div>
                 <div className={classes.sidemenuContent}>
                     <Divider />
@@ -163,6 +169,7 @@ function SideMenu(props){
 const mapStateToProps = state => {
     return {
         user : state.user,
+        boards : state.boards,
     }
 }
 
