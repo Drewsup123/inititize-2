@@ -8,3 +8,8 @@ I want this to be the same as old initize application but less cluttered and mor
 Drew Johnson
 
 #Contributers
+ // Link Contributers here
+
+#Technology
+-React
+
