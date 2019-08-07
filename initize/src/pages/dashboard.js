@@ -81,7 +81,13 @@ class Dashboard extends React.Component{
     }
 
     componentDidMount(){
-
+        firebase.database().ref('/boardData/' + this.props.selectedBoard.id).once('value').then(snap => {
+            if(snap.val()){
+                // do something
+            }else{
+                alert("No value")
+            }
+        })
     }
 
     onSortEnd = ({oldIndex, newIndex}) => {

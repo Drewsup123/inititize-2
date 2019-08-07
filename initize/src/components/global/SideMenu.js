@@ -106,6 +106,7 @@ function SideMenu(props){
 
     const changeSelected = board => {
         props.changeSelected(board);
+        props.history.push('/dashboard/' + board.id);
     }
 
     if(props.location.pathname === '/' || props.location.pathname === "/authenticate"){
