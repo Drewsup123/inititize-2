@@ -14,4 +14,8 @@ Drew Johnson
 -React
 -React Sortable hoc
 -React Router
--
+-Material Ui
+-array-move
+-moment
+-redux
+-firebase and firebase-tools
