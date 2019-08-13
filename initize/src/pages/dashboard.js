@@ -17,6 +17,9 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from "@material-ui/core/Button";
 import TextField from '@material-ui/core/TextField';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
 import * as firebase from 'firebase';
 
 const DragHandle = sortableHandle(() => <span style={{cursor : "row-resize"}}>:::</span>);
@@ -51,6 +54,10 @@ class Dashboard extends React.Component{
         super();
         this.state = {
             open : false,
+            selectOpen : false,
+            prioritySelectOpen : false,
+            userSelectOpen : false,
+            statusSelectOpen : false,
             tempRows : [
                 {
                     title : "test",
@@ -113,6 +120,22 @@ class Dashboard extends React.Component{
         this.setState({open : true})
     }
 
+    handleSelectOpen = select => {
+        if(select === "user"){
+            this.setState({userSelectOpen : true})
+        }
+        if(select === "priority"){
+            this.setState({prioritySelectOpen : true})
+        }
+        if(select === "status"){
+            this.setState({statusSelectOpen : true})
+        }
+    }
+
+    handleChange = e => {
+
+    }
+
     render(){
         const {temp_Array, tempRows} = this.state;
         return(
@@ -139,18 +162,62 @@ class Dashboard extends React.Component{
                         </Table>
                     </Paper>
                 </div>
+
+
                 {/* modal */}
                 <Dialog open={this.state.open} onClose={this.handleClose} aria-labelledby="form-dialog-title">
                     <DialogTitle id="form-dialog-title">Create A Task</DialogTitle>
                     <DialogContent>
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id="name"
-                        label="Task Title"
-                        type="text"
-                        fullWidth
-                    />
+                        <TextField
+                            autoFocus
+                            margin="dense"
+                            id="name"
+                            label="Task Title"
+                            type="text"
+                            name="title"
+                            fullWidth
+                        />
+                        {/* Priority */}
+                        <Select name="priority" fullWidth open={this.state.selectOpen}>
+                            <MenuItem>Critical</MenuItem>
+                            <MenuItem>Important</MenuItem>
+                            <MenuItem>Low</MenuItem>
+                            <MenuItem>Very Low</MenuItem>
+                        </Select>
+                        {/* Users */}
+                        <Select name="user" fullWidth open={this.state.selectOpen}>
+                            <MenuItem>Critical</MenuItem>
+                            <MenuItem>Important</MenuItem>
+                            <MenuItem>Low</MenuItem>
+                            <MenuItem>Very Low</MenuItem>
+                        </Select>
+                        {/* Status */}
+                        <Select name="status" fullWidth open={this.state.selectOpen}>
+                            <MenuItem>Done</MenuItem>
+                            <MenuItem>In Progress</MenuItem>
+                            <MenuItem>Needs Work</MenuItem>
+                            <MenuItem>Not Started</MenuItem>
+                        </Select>
+
+                        <TextField
+                            autoFocus
+                            margin="dense"
+                            id="name"
+                            label="Description"
+                            name="description"
+                            type="text"
+                            fullWidth
+                        />
+
+                        <TextField
+                            autoFocus
+                            margin="dense"
+                            id="name"
+                            label="Notes"
+                            name="title"
+                            type="text"
+                            fullWidth
+                        />
                     </DialogContent>
                     <DialogActions>
                     <Button color="primary" onClick={this.handleClose}>
@@ -161,6 +228,8 @@ class Dashboard extends React.Component{
                     </Button>
                     </DialogActions>
                 </Dialog>
+
+
             </React.Fragment>
         );
     }
