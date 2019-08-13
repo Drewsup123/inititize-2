@@ -132,8 +132,21 @@ class Dashboard extends React.Component{
         }
     }
 
-    handleChange = e => {
+    handleSelectClose = select => {
+        if(select === "user"){
+            this.setState({userSelectOpen : false})
+        }
+        if(select === "priority"){
+            this.setState({prioritySelectOpen : false})
+        }
+        if(select === "status"){
+            this.setState({statusSelectOpen : false})
+        }
+    }
 
+    handleChange = e => {
+        this.setState({newTask : {...this.state.newTask, [e.target.name] : e.target.value}});
+        console.log(this.state.newTask);
     }
 
     render(){
@@ -176,27 +189,49 @@ class Dashboard extends React.Component{
                             type="text"
                             name="title"
                             fullWidth
+                            onChange={this.handleChange}
                         />
                         {/* Priority */}
-                        <Select name="priority" fullWidth open={this.state.selectOpen}>
-                            <MenuItem>Critical</MenuItem>
-                            <MenuItem>Important</MenuItem>
-                            <MenuItem>Low</MenuItem>
-                            <MenuItem>Very Low</MenuItem>
+                        <Select 
+                            onChange={this.handleChange} 
+                            value={this.state.newTask.priority} 
+                            name="priority" 
+                            fullWidth 
+                            open={this.state.prioritySelectOpen}
+                            onOpen={() => this.handleSelectOpen("priority")}
+                            onClose={() => this.handleSelectClose("priority")}
+                        >
+                            <MenuItem value="critical">Critical</MenuItem>
+                            <MenuItem value="important">Important</MenuItem>
+                            <MenuItem value="low">Low</MenuItem>
+                            <MenuItem value="very low">Very Low</MenuItem>
                         </Select>
                         {/* Users */}
-                        <Select name="user" fullWidth open={this.state.selectOpen}>
-                            <MenuItem>Critical</MenuItem>
-                            <MenuItem>Important</MenuItem>
-                            <MenuItem>Low</MenuItem>
-                            <MenuItem>Very Low</MenuItem>
+                        <Select 
+                            onChange={this.handleChange} 
+                            value={this.state.newTask.user} 
+                            name="user" 
+                            fullWidth 
+                            open={this.state.userSelectOpen}
+                            onOpen={() => this.handleSelectOpen("user")}
+                            onClose={() => this.handleSelectClose("user")}
+                        >
+                            <MenuItem value="testUser">TestUser</MenuItem>
                         </Select>
                         {/* Status */}
-                        <Select name="status" fullWidth open={this.state.selectOpen}>
-                            <MenuItem>Done</MenuItem>
-                            <MenuItem>In Progress</MenuItem>
-                            <MenuItem>Needs Work</MenuItem>
-                            <MenuItem>Not Started</MenuItem>
+                        <Select 
+                            onChange={this.handleChange} 
+                            value={this.state.newTask.status} 
+                            name="status" 
+                            fullWidth 
+                            open={this.state.statusSelectOpen}
+                            onOpen={() => this.handleSelectOpen("status")}
+                            onClose={() => this.handleSelectClose("status")}
+                        >
+                            <MenuItem value="Done">Done</MenuItem>
+                            <MenuItem value="In Progress">In Progress</MenuItem>
+                            <MenuItem value="Needs Work">Needs Work</MenuItem>
+                            <MenuItem value="Not Started">Not Started</MenuItem>
                         </Select>
 
                         <TextField
@@ -207,6 +242,7 @@ class Dashboard extends React.Component{
                             name="description"
                             type="text"
                             fullWidth
+                            onChange={this.handleChange}
                         />
 
                         <TextField
@@ -214,9 +250,10 @@ class Dashboard extends React.Component{
                             margin="dense"
                             id="name"
                             label="Notes"
-                            name="title"
+                            name="notes"
                             type="text"
                             fullWidth
+                            onChange={this.handleChange}
                         />
                     </DialogContent>
                     <DialogActions>
