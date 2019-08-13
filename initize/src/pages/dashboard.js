@@ -10,6 +10,13 @@ import Paper from '@material-ui/core/Paper';
 import AddIcon from '@material-ui/icons/Add';
 import DeleteIcon from '@material-ui/icons/Delete';
 import {connect} from 'react-redux';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Button from "@material-ui/core/Button";
+import TextField from '@material-ui/core/TextField';
 import * as firebase from 'firebase';
 
 const DragHandle = sortableHandle(() => <span style={{cursor : "row-resize"}}>:::</span>);
@@ -43,6 +50,7 @@ class Dashboard extends React.Component{
     constructor(){
         super();
         this.state = {
+            open : false,
             tempRows : [
                 {
                     title : "test",
@@ -76,12 +84,13 @@ class Dashboard extends React.Component{
                     description : "test description 4",
                     notes : "this is a note 4"
                 },
-            ]
+            ],
+            newTask : {},
         }
     }
 
     componentDidMount(){
-        alert("mounted")
+        // alert("mounted");
     }
 
     onSortEnd = ({oldIndex, newIndex}) => {
@@ -96,31 +105,63 @@ class Dashboard extends React.Component{
         }));
     };
 
+    handleClose = () => {
+        this.setState({open : false})
+    }
+
+    handleOpen = () => {
+        this.setState({open : true})
+    }
+
     render(){
         const {temp_Array, tempRows} = this.state;
         return(
-            <div className="dashboard">
-                <Paper>
-                    <Table>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell></TableCell>
-                                <TableCell>Task</TableCell>
-                                <TableCell>Priority</TableCell>
-                                <TableCell>User</TableCell>
-                                <TableCell>Status</TableCell>
-                                <TableCell>Description</TableCell>
-                                <TableCell>Notes</TableCell>
-                                <TableCell><AddIcon /></TableCell>
-                            </TableRow>
-                        </TableHead>
+            <React.Fragment>
+                <div className="dashboard">
+                    <Paper>
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell></TableCell>
+                                    <TableCell>Task</TableCell>
+                                    <TableCell>Priority</TableCell>
+                                    <TableCell>User</TableCell>
+                                    <TableCell>Status</TableCell>
+                                    <TableCell>Description</TableCell>
+                                    <TableCell>Notes</TableCell>
+                                    <TableCell><AddIcon style={{cursor : "pointer"}} onClick={this.handleOpen}/></TableCell>
+                                </TableRow>
+                            </TableHead>
 
-                        <SortableContainer2 onSortEnd={this.onSortEnd2} useDragHandle lockAxis="y" lockToContainerEdges={true}>
-                            {tempRows.map((value, index) => <SortableItem2 key={index} index={index} value={value}/>)}
-                        </SortableContainer2>
-                    </Table>
-                </Paper>
-            </div>
+                            <SortableContainer2 onSortEnd={this.onSortEnd2} useDragHandle lockAxis="y" lockToContainerEdges={true}>
+                                {tempRows.map((value, index) => <SortableItem2 key={index} index={index} value={value}/>)}
+                            </SortableContainer2>
+                        </Table>
+                    </Paper>
+                </div>
+                {/* modal */}
+                <Dialog open={this.state.open} onClose={this.handleClose} aria-labelledby="form-dialog-title">
+                    <DialogTitle id="form-dialog-title">Create A Task</DialogTitle>
+                    <DialogContent>
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        id="name"
+                        label="Task Title"
+                        type="text"
+                        fullWidth
+                    />
+                    </DialogContent>
+                    <DialogActions>
+                    <Button color="primary" onClick={this.handleClose}>
+                        Cancel
+                    </Button>
+                    <Button color="primary">
+                        Create
+                    </Button>
+                    </DialogActions>
+                </Dialog>
+            </React.Fragment>
         );
     }
 }
