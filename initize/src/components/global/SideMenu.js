@@ -1,11 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
 import SettingsIcon from '@material-ui/icons/Settings';
 import MailIcon from '@material-ui/icons/Mail';
 import TopNav from './AppBar';
@@ -19,9 +18,13 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import Collapse from '@material-ui/core/Collapse';
+import StarBorder from '@material-ui/icons/StarBorder';
 import * as firebase from 'firebase';
 import {connect} from 'react-redux';
 import Tooltip from '@material-ui/core/Tooltip';
+import ExpandLess from '@material-ui/icons/ExpandLess';
+import ExpandMore from '@material-ui/icons/ExpandMore';
 import {createdBoard, changeSelected} from "../../redux/actions";
 import {Link} from "react-router-dom";
 import moment from 'moment'
@@ -64,6 +67,27 @@ function SideMenu(props){
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
     const [name, setName] = React.useState(false);
+    const [subBoardName, setSubBoardName] = React.useState("");
+    const [subBoardOpen, setSubBoardOpen] = React.useState(false);
+    const [subBoards, setSubBoards] = React.useState([]);
+    const [subBoardsCollapseOpen, setSubBoardsCollapseOpen] = React.useState(false);
+
+    useEffect(() => {
+        firebase.database().ref(`/boardData/${props.selectedBoard.id}`).once('value', snap => {
+            if(snap.val()){
+                setSubBoards(Object.values(snap.val()));
+            }else{
+                setSubBoards([])
+            }
+        })
+    }, [props.selectedBoard]);
+
+    useEffect(() => {
+        firebase.database().ref(`/boardData/${props.selectedBoard.id}`).on('child_added', snap => {
+            setSubBoards([...subBoards, snap.val()])
+            console.log("Change handler executed")
+        })
+    }, [])
 
     const createBoard = () => {
         const key = firebase.database().ref('/boards').push().key;
@@ -109,6 +133,22 @@ function SideMenu(props){
         props.history.push('/dashboard/' + board.id);
     }
 
+    const addSubBoard = () => {
+        if(subBoardName){
+            firebase.database().ref(`/boardData/${props.selectedBoard.id}/${subBoardName}`).set({
+                name : subBoardName,
+                tasks : []
+            }).then(() => {
+                setSubBoardOpen(false);
+            })
+            .catch(err => {
+                alert("There was an error creating the sub-board please try again.")
+            })
+        }else{
+            alert("Please input a name for the board")
+        }
+    }
+
     if(props.location.pathname === '/' || props.location.pathname === "/authenticate"){
         return null;
     }
@@ -148,10 +188,16 @@ function SideMenu(props){
 
                     <Divider />
                     <List>
-                        <ListItem button>
-                            <ListItemIcon><InboxIcon /></ListItemIcon>
-                            <ListItemText primary='Boards' />
+                        <ListItem button onClick={() => setSubBoardsCollapseOpen(!subBoardsCollapseOpen)}>
+                            <ListItemIcon><AddIcon onClick={() => setSubBoardOpen(true)}/></ListItemIcon>
+                            <ListItemText primary='Sub-Boards' />
+                            {subBoardsCollapseOpen ? <ExpandLess/> : <ExpandMore/>}
                         </ListItem>
+                        <Collapse in={subBoardsCollapseOpen} timeout="auto" unmountOnExit>
+                            <List component="div" disablePadding>
+                                {subBoards.length ? subBoards.map(board => <ListItem><ListItemText>{board.name}</ListItemText></ListItem>) : "No Sub-Boards"}
+                            </List>
+                        </Collapse>
                         <ListItem>
                             <ListItemIcon><MailIcon /></ListItemIcon>
                             <ListItemText primary='Messages' />
@@ -159,6 +205,7 @@ function SideMenu(props){
                     </List>
                 </div>
             </div>
+
             {/* modal */}
             <Dialog open={open} onClose={() => setOpen(false)} aria-labelledby="form-dialog-title">
                 <DialogTitle id="form-dialog-title">Create A Board</DialogTitle>
@@ -181,6 +228,33 @@ function SideMenu(props){
                     Cancel
                 </Button>
                 <Button onClick={() => createBoard()} color="primary">
+                    Create
+                </Button>
+                </DialogActions>
+            </Dialog>
+
+            {/* sub board modal */}
+            <Dialog open={subBoardOpen} onClose={() => setSubBoardOpen(false)} aria-labelledby="form-dialog-title">
+                <DialogTitle id="form-dialog-title">Create A Board</DialogTitle>
+                <DialogContent>
+                <DialogContentText>
+                    Create a new sub-board to help separate tasks for your team.
+                </DialogContentText>
+                <TextField
+                    autoFocus
+                    margin="dense"
+                    id="name"
+                    label="Board Name"
+                    type="text"
+                    fullWidth
+                    onChange={(e) => setSubBoardName(e.target.value)}
+                />
+                </DialogContent>
+                <DialogActions>
+                <Button onClick={() => setSubBoardOpen(false)} color="primary">
+                    Cancel
+                </Button>
+                <Button onClick={() => addSubBoard()} color="primary">
                     Create
                 </Button>
                 </DialogActions>
