@@ -149,6 +149,12 @@ class Dashboard extends React.Component{
         console.log(this.state.newTask);
     }
 
+    handleAddNewTask = () => {
+        // console.log(this.props.selectedBoard.id)
+        const boardId = this.props.selectedBoard.id;
+        firebase.database().ref(`/boardData/${boardId}`)
+    }
+
     render(){
         const {temp_Array, tempRows} = this.state;
         return(
@@ -260,7 +266,7 @@ class Dashboard extends React.Component{
                     <Button color="primary" onClick={this.handleClose}>
                         Cancel
                     </Button>
-                    <Button color="primary">
+                    <Button onClick={this.handleAddNewTask} color="primary">
                         Create
                     </Button>
                     </DialogActions>

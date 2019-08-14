@@ -7,6 +7,7 @@ const initialState = {
     boards : [],
     firstTimeUser : false,
     selectedBoard : {},
+    selectedSubBoard : {},
 }
 
 export const reducer = (state = initialState, action) => {
