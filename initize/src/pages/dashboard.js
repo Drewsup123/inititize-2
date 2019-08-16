@@ -98,28 +98,29 @@ class Dashboard extends React.Component{
     }
 
     componentDidMount(){
-        // alert("mounted");
+        alert("mounted");
         if(this.props.match.params.subBoardId){
             console.log("param name", this.props.match.params.subBoardId);
             firebase.database().ref(`/boardData/${this.props.selectedBoard.id}/${this.props.match.params.subBoardId}`).once('value').then(snap => {
-                if(snap.val().tasks){
+                if(snap.val() && snap.val().tasks){
                     this.setState({tasks : Object.values(snap.val().tasks)})
+                    console.log("tasks ", Object.values(snap.val().tasks))
                 }
             })
         }
     }
 
     onSortEnd = ({oldIndex, newIndex}) => {
-        this.setState(({temp_Array}) => ({
-            temp_Array: arrayMove(temp_Array, oldIndex, newIndex),
+        this.setState(({tasks}) => ({
+            tasks: arrayMove(tasks, oldIndex, newIndex),
         }));
     };
 
-    onSortEnd2 = ({oldIndex, newIndex}) => {
-        this.setState(({tempRows}) => ({
-            tempRows: arrayMove(tempRows, oldIndex, newIndex),
-        }));
-    };
+    // onSortEnd2 = ({oldIndex, newIndex}) => {
+    //     this.setState(({tempRows}) => ({
+    //         tempRows: arrayMove(tempRows, oldIndex, newIndex),
+    //     }));
+    // };
 
     handleClose = () => {
         this.setState({open : false})
@@ -191,8 +192,8 @@ class Dashboard extends React.Component{
                                 </TableRow>
                             </TableHead>
 
-                            <SortableContainer2 onSortEnd={this.onSortEnd2} useDragHandle lockAxis="y" lockToContainerEdges={true}>
-                                {tempRows.map((value, index) => <SortableItem2 key={index} index={index} value={value}/>)}
+                            <SortableContainer2 onSortEnd={this.onSortEnd} useDragHandle lockAxis="y" lockToContainerEdges={true}>
+                                {this.state.tasks.map((value, index) => <SortableItem2 key={index} index={index} value={value}/>)}
                             </SortableContainer2>
                         </Table>
                     </Paper>
