@@ -93,13 +93,19 @@ class Dashboard extends React.Component{
                 },
             ],
             newTask : {},
+            tasks : [],
         }
     }
 
     componentDidMount(){
-        alert("mounted");
+        // alert("mounted");
         if(this.props.match.params.subBoardId){
-            console.log("param name", this.props.match.params.subBoardId)
+            console.log("param name", this.props.match.params.subBoardId);
+            firebase.database().ref(`/boardData/${this.props.selectedBoard.id}/${this.props.match.params.subBoardId}`).once('value').then(snap => {
+                if(snap.val().tasks){
+                    this.setState({tasks : Object.values(snap.val().tasks)})
+                }
+            })
         }
     }
 
@@ -155,7 +161,14 @@ class Dashboard extends React.Component{
     handleAddNewTask = () => {
         // console.log(this.props.selectedBoard.id)
         const boardId = this.props.selectedBoard.id;
-        firebase.database().ref(`/boardData/${boardId}`)
+        const subBoardId = this.props.match.params.subBoardId;
+        const ref = firebase.database().ref(`/boardData/${boardId}/${subBoardId}`).child("tasks");
+        const key = ref.push().key;
+        const task = {...this.state.newTask, id : key}
+        ref.child(key).set(task).then(() => {
+            this.setState({open:false})
+        })
+        .catch(err => console.log(err))
     }
 
     render(){
