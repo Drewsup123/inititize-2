@@ -97,7 +97,10 @@ class Dashboard extends React.Component{
     }
 
     componentDidMount(){
-        // alert("mounted");
+        alert("mounted");
+        if(this.props.match.params.subBoardId){
+            console.log("param name", this.props.match.params.subBoardId)
+        }
     }
 
     onSortEnd = ({oldIndex, newIndex}) => {

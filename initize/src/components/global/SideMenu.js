@@ -27,7 +27,7 @@ import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import {createdBoard, changeSelected} from "../../redux/actions";
 import {Link} from "react-router-dom";
-import moment from 'moment'
+import moment from 'moment';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -195,7 +195,15 @@ function SideMenu(props){
                         </ListItem>
                         <Collapse in={subBoardsCollapseOpen} timeout="auto" unmountOnExit>
                             <List component="div" disablePadding>
-                                {subBoards.length ? subBoards.map(board => <ListItem><ListItemText>{board.name}</ListItemText></ListItem>) : "No Sub-Boards"}
+                                {subBoards.length 
+                                    ? subBoards.map(board => 
+                                        <Link style={{color : "black", textDecoration : "none"}} to={`/dashboard/${props.selectedBoard.id}/${board.name}`}>
+                                            <ListItem button>
+                                                <ListItemText>{board.name}</ListItemText>
+                                            </ListItem>
+                                        </Link>
+                                        ) 
+                                    : "No Sub-Boards"}
                             </List>
                         </Collapse>
                         <ListItem>

@@ -18,7 +18,16 @@ function App(props) {
       <Route exact path="/" render={() => <LandingPage />} />
       <Route path="/authenticate" render={() => <SignUp {...props}/>} />
       <div className="dashboard-content">
-        <Route path="/dashboard/:id" render={(props) => <Dashboard key={props.match.params.id} {...props}/>} />
+        <Route 
+          path="/dashboard/:id/:subBoardId?" 
+          render={(props) => 
+            <Dashboard 
+              key={props.match.params.subBoardId 
+              ? props.match.params.subBoardId
+              : props.match.params.id} 
+              {...props}
+            />} 
+          />
         <Route path="/account-settings" render={() => <AccountSettings />} />
       </div>
     </div>
