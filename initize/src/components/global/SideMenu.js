@@ -188,24 +188,34 @@ function SideMenu(props){
 
                     <Divider />
                     <List>
-                        <ListItem button onClick={() => setSubBoardsCollapseOpen(!subBoardsCollapseOpen)}>
-                            <ListItemIcon><AddIcon onClick={() => setSubBoardOpen(true)}/></ListItemIcon>
-                            <ListItemText primary='Sub-Boards' />
-                            {subBoardsCollapseOpen ? <ExpandLess/> : <ExpandMore/>}
-                        </ListItem>
-                        <Collapse in={subBoardsCollapseOpen} timeout="auto" unmountOnExit>
-                            <List component="div" disablePadding>
-                                {subBoards.length 
-                                    ? subBoards.map(board => 
-                                        <Link style={{color : "black", textDecoration : "none"}} to={`/dashboard/${props.selectedBoard.id}/${board.name}`}>
-                                            <ListItem button>
-                                                <ListItemText>{board.name}</ListItemText>
-                                            </ListItem>
-                                        </Link>
-                                        ) 
-                                    : "No Sub-Boards"}
-                            </List>
-                        </Collapse>
+                        {
+                            props.selectedBoard.id 
+                            ?
+                            <React.Fragment>
+                            <ListItem button onClick={() => setSubBoardsCollapseOpen(!subBoardsCollapseOpen)}>
+                                <ListItemIcon><AddIcon onClick={() => setSubBoardOpen(true)}/></ListItemIcon>
+                                <ListItemText primary='Sub-Boards' />
+                                {subBoardsCollapseOpen ? <ExpandLess/> : <ExpandMore/>}
+                            </ListItem>
+                            <Collapse in={subBoardsCollapseOpen} timeout="auto" unmountOnExit>
+                                <List component="div" disablePadding>
+                                    {subBoards.length 
+                                        ? subBoards.map(board => 
+                                            <Link style={{color : "black", textDecoration : "none"}} to={`/dashboard/${props.selectedBoard.id}/${board.name}`}>
+                                                <ListItem button>
+                                                    <ListItemText>{board.name}</ListItemText>
+                                                </ListItem>
+                                            </Link>
+                                            ) 
+                                        : "No Sub-Boards"}
+                                </List>
+                            </Collapse>
+                            </React.Fragment>
+                            :
+                            <ListItem>
+                                <ListItemText primary='Create A Board To Get Started' />
+                            </ListItem>
+                        }
                         <ListItem>
                             <ListItemIcon><MailIcon /></ListItemIcon>
                             <ListItemText primary='Messages' />
