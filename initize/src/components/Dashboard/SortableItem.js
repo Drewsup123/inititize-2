@@ -35,9 +35,7 @@ const SortableItem = sortableElement(({value, index, boardId, subBoardId}) => {
 
         const onSubmitEdits = e => {
             firebase.database().ref(`/boardData/${boardId}/${subBoardId}/tasks`).child(value.id).update(edits).then(() => {
-                let copy = {...value};
-                let final = {...copy, edits}
-                setValue(final)
+                setValue(edits)
             }).catch(err => {
                 alert("There Was an error updating your board");
             })
@@ -46,7 +44,7 @@ const SortableItem = sortableElement(({value, index, boardId, subBoardId}) => {
 
         return(
             <React.Fragment>
-                <TableRow style={editMode ? {width : "100%", border:"1px solid blue"} : {width : "100%"}}>
+                <TableRow style={editMode ? {width : "100%", borderLeft:"1px solid blue"} : {width : "100%"}}>
                     <TableCell><DragHandle/></TableCell>
 
                     <TableCell component="th" scope="row">
@@ -57,9 +55,8 @@ const SortableItem = sortableElement(({value, index, boardId, subBoardId}) => {
                             id="title"
                             name="title"
                             type="text"
-                            fullWidth
                             value={edits.title}
-                            onChange={(e) => {setEdits({[e.target.name] : e.target.value})}}
+                            onChange={handleChange}
                             /> 
                         : Value.title
                         }
@@ -70,8 +67,7 @@ const SortableItem = sortableElement(({value, index, boardId, subBoardId}) => {
                         ? <Select 
                             onChange={handleChange} 
                             value={edits.priority} 
-                            name="priority" 
-                            fullWidth 
+                            name="priority"  
                             open={prioritySelectOpen}
                             onOpen={() => handleSelectState("priority")}
                             onClose={() => handleSelectState("priority")}
@@ -93,9 +89,8 @@ const SortableItem = sortableElement(({value, index, boardId, subBoardId}) => {
                             id="user"
                             name="user"
                             type="text"
-                            fullWidth
                             value={edits.user}
-                            onChange={(e) => {setEdits({[e.target.name] : e.target.value})}}
+                            onChange={handleChange}
                             /> 
                         : Value.user
                         }
@@ -106,8 +101,7 @@ const SortableItem = sortableElement(({value, index, boardId, subBoardId}) => {
                         ? <Select 
                             onChange={handleChange} 
                             value={edits.status} 
-                            name="status" 
-                            fullWidth 
+                            name="status"  
                             open={statusSelectOpen}
                             onOpen={() => handleSelectState("status")}
                             onClose={() => handleSelectState("status")}
@@ -129,9 +123,8 @@ const SortableItem = sortableElement(({value, index, boardId, subBoardId}) => {
                             id="description"
                             name="description"
                             type="text"
-                            fullWidth
                             value={edits.description}
-                            onChange={(e) => {setEdits({[e.target.name] : e.target.value})}}
+                            onChange={handleChange}
                             /> 
                         : Value.description
                         }
@@ -145,9 +138,8 @@ const SortableItem = sortableElement(({value, index, boardId, subBoardId}) => {
                             id="notes"
                             name="notes"
                             type="text"
-                            fullWidth
                             value={edits.notes}
-                            onChange={(e) => {setEdits({[e.target.name] : e.target.value})}}
+                            onChange={handleChange}
                             /> 
                         : 
                         Value.notes
