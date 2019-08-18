@@ -177,124 +177,136 @@ class Dashboard extends React.Component{
 
     render(){
         const {temp_Array, tempRows} = this.state;
-        return(
-            <React.Fragment>
-                <div className="dashboard">
-                    <Paper>
-                        <Table>
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell></TableCell>
-                                    <TableCell>Task</TableCell>
-                                    <TableCell>Priority</TableCell>
-                                    <TableCell>User</TableCell>
-                                    <TableCell>Status</TableCell>
-                                    <TableCell>Description</TableCell>
-                                    <TableCell>Notes</TableCell>
-                                    <TableCell><AddIcon style={{cursor : "pointer"}} onClick={this.handleOpen}/></TableCell>
-                                </TableRow>
-                            </TableHead>
-
-                            <SortableContainer2 onSortEnd={this.onSortEnd} useDragHandle lockAxis="y" lockToContainerEdges={true}>
-                                {this.state.tasks.map((value, index) => <SortableItem subBoardId={this.props.match.params.subBoardId} boardId={this.props.selectedBoard.id} key={index} index={index} value={value}/>)}
-                            </SortableContainer2>
-                        </Table>
-                    </Paper>
+        if(this.props.selectedBoard && this.props.match.params.subBoardId){
+            return(
+                <React.Fragment>
+                    <div className="dashboard">
+                        <Paper>
+                            <Table>
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell></TableCell>
+                                        <TableCell>Task</TableCell>
+                                        <TableCell>Priority</TableCell>
+                                        <TableCell>User</TableCell>
+                                        <TableCell>Status</TableCell>
+                                        <TableCell>Description</TableCell>
+                                        <TableCell>Notes</TableCell>
+                                        <TableCell><AddIcon style={{cursor : "pointer"}} onClick={this.handleOpen}/></TableCell>
+                                    </TableRow>
+                                </TableHead>
+    
+                                <SortableContainer2 onSortEnd={this.onSortEnd} useDragHandle lockAxis="y" lockToContainerEdges={true}>
+                                    {this.state.tasks.map((value, index) => <SortableItem subBoardId={this.props.match.params.subBoardId} boardId={this.props.selectedBoard.id} key={index} index={index} value={value}/>)}
+                                </SortableContainer2>
+                            </Table>
+                        </Paper>
+                    </div>
+    
+    
+                    {/* modal */}
+                    <Dialog open={this.state.open} onClose={this.handleClose} aria-labelledby="form-dialog-title">
+                        <DialogTitle id="form-dialog-title">Create A Task</DialogTitle>
+                        <DialogContent>
+                            <TextField
+                                autoFocus
+                                margin="dense"
+                                id="name"
+                                label="Task Title"
+                                type="text"
+                                name="title"
+                                fullWidth
+                                onChange={this.handleChange}
+                            />
+                            {/* Priority */}
+                            <Select 
+                                onChange={this.handleChange} 
+                                value={this.state.newTask.priority} 
+                                name="priority" 
+                                fullWidth 
+                                open={this.state.prioritySelectOpen}
+                                onOpen={() => this.handleSelectOpen("priority")}
+                                onClose={() => this.handleSelectClose("priority")}
+                            >
+                                <MenuItem value="critical">Critical</MenuItem>
+                                <MenuItem value="important">Important</MenuItem>
+                                <MenuItem value="low">Low</MenuItem>
+                                <MenuItem value="very low">Very Low</MenuItem>
+                            </Select>
+                            {/* Users */}
+                            <Select 
+                                onChange={this.handleChange} 
+                                value={this.state.newTask.user} 
+                                name="user" 
+                                fullWidth 
+                                open={this.state.userSelectOpen}
+                                onOpen={() => this.handleSelectOpen("user")}
+                                onClose={() => this.handleSelectClose("user")}
+                            >
+                                <MenuItem value="testUser">TestUser</MenuItem>
+                            </Select>
+                            {/* Status */}
+                            <Select 
+                                onChange={this.handleChange} 
+                                value={this.state.newTask.status} 
+                                name="status" 
+                                fullWidth 
+                                open={this.state.statusSelectOpen}
+                                onOpen={() => this.handleSelectOpen("status")}
+                                onClose={() => this.handleSelectClose("status")}
+                            >
+                                <MenuItem value="Done">Done</MenuItem>
+                                <MenuItem value="In Progress">In Progress</MenuItem>
+                                <MenuItem value="Needs Work">Needs Work</MenuItem>
+                                <MenuItem value="Not Started">Not Started</MenuItem>
+                            </Select>
+    
+                            <TextField
+                                autoFocus
+                                margin="dense"
+                                id="name"
+                                label="Description"
+                                name="description"
+                                type="text"
+                                fullWidth
+                                onChange={this.handleChange}
+                            />
+    
+                            <TextField
+                                autoFocus
+                                margin="dense"
+                                id="name"
+                                label="Notes"
+                                name="notes"
+                                type="text"
+                                fullWidth
+                                onChange={this.handleChange}
+                            />
+                        </DialogContent>
+                        <DialogActions>
+                        <Button color="primary" onClick={this.handleClose}>
+                            Cancel
+                        </Button>
+                        <Button onClick={this.handleAddNewTask} color="primary">
+                            Create
+                        </Button>
+                        </DialogActions>
+                    </Dialog>
+    
+    
+                </React.Fragment>
+            );
+        }
+        if(this.props.selectedBoard && this.props.match.params.chatroomId){
+            return null;
+        }
+        else{
+            return(
+                <div>
+                    <h1>Please select a sub-board or chatroom to get started</h1>
                 </div>
-
-
-                {/* modal */}
-                <Dialog open={this.state.open} onClose={this.handleClose} aria-labelledby="form-dialog-title">
-                    <DialogTitle id="form-dialog-title">Create A Task</DialogTitle>
-                    <DialogContent>
-                        <TextField
-                            autoFocus
-                            margin="dense"
-                            id="name"
-                            label="Task Title"
-                            type="text"
-                            name="title"
-                            fullWidth
-                            onChange={this.handleChange}
-                        />
-                        {/* Priority */}
-                        <Select 
-                            onChange={this.handleChange} 
-                            value={this.state.newTask.priority} 
-                            name="priority" 
-                            fullWidth 
-                            open={this.state.prioritySelectOpen}
-                            onOpen={() => this.handleSelectOpen("priority")}
-                            onClose={() => this.handleSelectClose("priority")}
-                        >
-                            <MenuItem value="critical">Critical</MenuItem>
-                            <MenuItem value="important">Important</MenuItem>
-                            <MenuItem value="low">Low</MenuItem>
-                            <MenuItem value="very low">Very Low</MenuItem>
-                        </Select>
-                        {/* Users */}
-                        <Select 
-                            onChange={this.handleChange} 
-                            value={this.state.newTask.user} 
-                            name="user" 
-                            fullWidth 
-                            open={this.state.userSelectOpen}
-                            onOpen={() => this.handleSelectOpen("user")}
-                            onClose={() => this.handleSelectClose("user")}
-                        >
-                            <MenuItem value="testUser">TestUser</MenuItem>
-                        </Select>
-                        {/* Status */}
-                        <Select 
-                            onChange={this.handleChange} 
-                            value={this.state.newTask.status} 
-                            name="status" 
-                            fullWidth 
-                            open={this.state.statusSelectOpen}
-                            onOpen={() => this.handleSelectOpen("status")}
-                            onClose={() => this.handleSelectClose("status")}
-                        >
-                            <MenuItem value="Done">Done</MenuItem>
-                            <MenuItem value="In Progress">In Progress</MenuItem>
-                            <MenuItem value="Needs Work">Needs Work</MenuItem>
-                            <MenuItem value="Not Started">Not Started</MenuItem>
-                        </Select>
-
-                        <TextField
-                            autoFocus
-                            margin="dense"
-                            id="name"
-                            label="Description"
-                            name="description"
-                            type="text"
-                            fullWidth
-                            onChange={this.handleChange}
-                        />
-
-                        <TextField
-                            autoFocus
-                            margin="dense"
-                            id="name"
-                            label="Notes"
-                            name="notes"
-                            type="text"
-                            fullWidth
-                            onChange={this.handleChange}
-                        />
-                    </DialogContent>
-                    <DialogActions>
-                    <Button color="primary" onClick={this.handleClose}>
-                        Cancel
-                    </Button>
-                    <Button onClick={this.handleAddNewTask} color="primary">
-                        Create
-                    </Button>
-                    </DialogActions>
-                </Dialog>
-
-
-            </React.Fragment>
-        );
+            );
+        }
     }
 }
 
