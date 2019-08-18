@@ -9,6 +9,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import AddIcon from '@material-ui/icons/Add';
 import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
 import {connect} from 'react-redux';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -21,6 +22,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import * as firebase from 'firebase';
+import SortableItem from '../components/Dashboard/SortableItem';
 
 const DragHandle = sortableHandle(() => <span style={{cursor : "row-resize"}}>:::</span>);
 
@@ -44,7 +46,7 @@ const SortableItem2 = sortableElement(({value}) =>
                 <TableCell>{value.status}</TableCell>
                 <TableCell>{value.description}</TableCell>
                 <TableCell>{value.notes}</TableCell>
-                <TableCell><DeleteIcon /></TableCell>
+                <TableCell><DeleteIcon /><EditIcon /></TableCell>
             </TableRow>
         </React.Fragment>
 )
@@ -98,7 +100,7 @@ class Dashboard extends React.Component{
     }
 
     componentDidMount(){
-        alert("mounted");
+        // alert("mounted");
         if(this.props.match.params.subBoardId){
             console.log("param name", this.props.match.params.subBoardId);
             firebase.database().ref(`/boardData/${this.props.selectedBoard.id}/${this.props.match.params.subBoardId}`).once('value').then(snap => {
@@ -193,7 +195,7 @@ class Dashboard extends React.Component{
                             </TableHead>
 
                             <SortableContainer2 onSortEnd={this.onSortEnd} useDragHandle lockAxis="y" lockToContainerEdges={true}>
-                                {this.state.tasks.map((value, index) => <SortableItem2 key={index} index={index} value={value}/>)}
+                                {this.state.tasks.map((value, index) => <SortableItem subBoardId={this.props.match.params.subBoardId} boardId={this.props.selectedBoard.id} key={index} index={index} value={value}/>)}
                             </SortableContainer2>
                         </Table>
                     </Paper>
