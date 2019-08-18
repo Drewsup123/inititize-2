@@ -169,7 +169,8 @@ class Dashboard extends React.Component{
         const key = ref.push().key;
         const task = {...this.state.newTask, id : key}
         ref.child(key).set(task).then(() => {
-            this.setState({open:false})
+            this.setState({open:false});
+            this.setState({tasks : [...this.state.tasks, task]})
         })
         .catch(err => console.log(err))
     }
