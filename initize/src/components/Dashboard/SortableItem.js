@@ -42,6 +42,16 @@ const SortableItem = sortableElement(({value, index, boardId, subBoardId}) => {
             setEditMode(false);
         }
 
+        const setColor = {
+            inProgress : {backgroundColor : "yellow"},
+            done : {backgroundColor : "green"},
+            notStarted : {backgroundColor : "red"},
+            needsWork : {backgroundColor : "lime"},
+            critical : {backgroundColor : "red"},
+            important : {backgroundColor : "yellow"},
+            low : {backgroundColor : "green"},
+        }
+
         return(
             <React.Fragment>
                 <TableRow style={editMode ? {width : "100%", borderLeft:"1px solid blue"} : {width : "100%"}}>
@@ -62,7 +72,7 @@ const SortableItem = sortableElement(({value, index, boardId, subBoardId}) => {
                         }
                     </TableCell>
 
-                    <TableCell>
+                    <TableCell >
                         {editMode 
                         ? <Select 
                             onChange={handleChange} 

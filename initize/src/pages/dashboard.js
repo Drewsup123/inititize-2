@@ -109,7 +109,16 @@ class Dashboard extends React.Component{
                     console.log("tasks ", Object.values(snap.val().tasks))
                 }
             })
+            // this.newTaskListener();
         }
+    }
+
+    newTaskListener = () => {
+        firebase.database().ref(`/boardData/${this.props.selectedBoard.id}/${this.props.match.params.subBoardId}`).on('child_added', snap => {
+            console.log(snap.val())
+            const task = {...snap.val()}
+            this.setState({tasks : [...this.state.tasks, task[0]]})
+        })
     }
 
     onSortEnd = ({oldIndex, newIndex}) => {
@@ -170,7 +179,7 @@ class Dashboard extends React.Component{
         const task = {...this.state.newTask, id : key}
         ref.child(key).set(task).then(() => {
             this.setState({open:false});
-            this.setState({tasks : [...this.state.tasks, task]})
+            // this.setState({tasks : [...this.state.tasks, task]})
         })
         .catch(err => console.log(err))
     }
