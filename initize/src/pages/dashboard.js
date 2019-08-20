@@ -110,7 +110,7 @@ class Dashboard extends React.Component{
             //     }
             // })
             this.newTaskListener();
-            // this.deleteTaskListener();
+            this.deleteTaskListener();
             console.log("state", this.state)
         }
     }
@@ -198,8 +198,14 @@ class Dashboard extends React.Component{
     }
 
     deleteTaskListener = () => {
-        firebase.database().ref(`/boardData/${this.props.selectedBoard.id}/${this.props.match.params.subBoardId}`).on("child_removed", snap => {
-            const final = this.state.tasks.reduce(task => task.id != snap.val().id)
+        firebase.database().ref(`/boardData/${this.props.selectedBoard.id}/${this.props.match.params.subBoardId}`).child("tasks").on("child_removed", snap => {
+            console.log("Delete Listener", snap.val())
+            let final = [];
+            this.state.tasks.map(task => {
+                if(snap.val().id !== task.id){
+                    final.push(task)
+                }
+            })
             this.setState({tasks : final})
         })
     }
@@ -227,6 +233,7 @@ class Dashboard extends React.Component{
     
                                 <SortableContainer2 onSortEnd={this.onSortEnd} useDragHandle lockAxis="y" lockToContainerEdges={true}>
                                     {
+                                        this.state.tasks.length ?
                                         this.state.tasks.map((value, index) => 
                                             <SortableItem 
                                                 subBoardId={this.props.match.params.subBoardId} 
@@ -236,6 +243,7 @@ class Dashboard extends React.Component{
                                                 value={value}
                                                 />
                                             )
+                                        :null
                                     }
                                 </SortableContainer2>
                             </Table>
