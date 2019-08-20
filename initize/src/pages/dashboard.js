@@ -115,6 +115,10 @@ class Dashboard extends React.Component{
         }
     }
 
+    componentDidUpdate(){
+        console.log("Tasks in State", this.state.tasks)
+    }
+
     newTaskListener = () => {
         let newTasks = [];
         firebase.database().ref(`/boardData/${this.props.selectedBoard.id}/${this.props.match.params.subBoardId}`).child("tasks")
@@ -125,9 +129,15 @@ class Dashboard extends React.Component{
     }
 
     onSortEnd = ({oldIndex, newIndex}) => {
-        this.setState(({tasks}) => ({
-            tasks: arrayMove(tasks, oldIndex, newIndex),
-        }));
+        console.log("old index", oldIndex, "newIndex", newIndex)
+        let copy = [...this.state.tasks];
+        copy = arrayMove(copy, oldIndex, newIndex);
+        console.log("what it is returning", copy)
+        // this.setState(({tasks}) => ({
+        //     tasks: arrayMove(tasks, oldIndex, newIndex),
+        // }));
+        this.setState({tasks : copy})
+        // this.forceUpdate()
     };
 
     // onSortEnd2 = ({oldIndex, newIndex}) => {
@@ -216,7 +226,17 @@ class Dashboard extends React.Component{
                                 </TableHead>
     
                                 <SortableContainer2 onSortEnd={this.onSortEnd} useDragHandle lockAxis="y" lockToContainerEdges={true}>
-                                    {this.state.tasks.length ? this.state.tasks.map((value, index) => <SortableItem subBoardId={this.props.match.params.subBoardId} boardId={this.props.selectedBoard.id} key={index} index={index} value={value}/>) : null}
+                                    {
+                                        this.state.tasks.map((value, index) => 
+                                            <SortableItem 
+                                                subBoardId={this.props.match.params.subBoardId} 
+                                                boardId={this.props.selectedBoard.id} 
+                                                key={value.id} 
+                                                index={index}
+                                                value={value}
+                                                />
+                                            )
+                                    }
                                 </SortableContainer2>
                             </Table>
                         </Paper>
