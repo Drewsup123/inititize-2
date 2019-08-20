@@ -73,21 +73,12 @@ function SideMenu(props){
     const [subBoardsCollapseOpen, setSubBoardsCollapseOpen] = React.useState(false);
 
     useEffect(() => {
-        firebase.database().ref(`/boardData/${props.selectedBoard.id}`).once('value', snap => {
-            if(snap.val()){
-                setSubBoards(Object.values(snap.val()));
-            }else{
-                setSubBoards([])
-            }
-        })
+        getSubBoards();
     }, [props.selectedBoard]);
 
-    useEffect(() => {
-        firebase.database().ref(`/boardData/${props.selectedBoard.id}`).on('child_added', snap => {
-            setSubBoards([...subBoards, snap.val()])
-            console.log("Change handler executed")
-        })
-    }, [])
+    useEffect(() => 
+        newSubBoardListener()
+    , [])
 
     const createBoard = () => {
         const key = firebase.database().ref('/boards').push().key;
@@ -126,6 +117,16 @@ function SideMenu(props){
         setOpen(false);
     }
 
+    const getSubBoards = () => {
+        firebase.database().ref(`/boardData/${props.selectedBoard.id}`).once('value', snap => {
+            if(snap.val()){
+                setSubBoards(Object.values(snap.val()));
+            }else{
+                setSubBoards([])
+            }
+        })
+    }
+
     const showDate = date => `${moment(date).format("MMM Do YY")}`;
 
     const changeSelected = board => {
@@ -140,6 +141,7 @@ function SideMenu(props){
                 tasks : []
             }).then(() => {
                 setSubBoardOpen(false);
+                getSubBoards();
             })
             .catch(err => {
                 alert("There was an error creating the sub-board please try again.")
@@ -148,6 +150,15 @@ function SideMenu(props){
             alert("Please input a name for the board")
         }
     }
+
+    
+    const newSubBoardListener = () => {
+        firebase.database().ref(`/boardData/${props.selectedBoard.id}`).on('child_added', snap => {
+            console.log("newsubboard", snap);
+            setSubBoards([...subBoards, snap.val()])
+        })
+    }
+    
 
     if(props.location.pathname === '/' || props.location.pathname === "/authenticate"){
         return null;

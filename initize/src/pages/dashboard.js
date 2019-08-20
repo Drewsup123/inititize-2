@@ -101,23 +101,26 @@ class Dashboard extends React.Component{
 
     componentDidMount(){
         // alert("mounted");
-        if(this.props.match.params.subBoardId){
-            console.log("param name", this.props.match.params.subBoardId);
-            firebase.database().ref(`/boardData/${this.props.selectedBoard.id}/${this.props.match.params.subBoardId}`).once('value').then(snap => {
-                if(snap.val() && snap.val().tasks){
-                    this.setState({tasks : Object.values(snap.val().tasks)})
-                    console.log("tasks ", Object.values(snap.val().tasks))
-                }
-            })
-            // this.newTaskListener();
+        if(this.props.match.params.subBoardId != undefined){
+            // console.log("param name", this.props.match.params.subBoardId);
+            // firebase.database().ref(`/boardData/${this.props.selectedBoard.id}/${this.props.match.params.subBoardId}`).once('value').then(snap => {
+            //     if(snap.val() && snap.val().tasks){
+            //         this.setState({tasks : Object.values(snap.val().tasks)})
+            //         console.log("tasks ", Object.values(snap.val().tasks))
+            //     }
+            // })
+            this.newTaskListener();
+            // this.deleteTaskListener();
+            console.log("state", this.state)
         }
     }
 
     newTaskListener = () => {
-        firebase.database().ref(`/boardData/${this.props.selectedBoard.id}/${this.props.match.params.subBoardId}`).on('child_added', snap => {
-            console.log(snap.val())
-            const task = {...snap.val()}
-            this.setState({tasks : [...this.state.tasks, task[0]]})
+        let newTasks = [];
+        firebase.database().ref(`/boardData/${this.props.selectedBoard.id}/${this.props.match.params.subBoardId}`).child("tasks")
+            .on('child_added', snap => {
+                newTasks.push(snap.val());
+                this.setState({tasks : newTasks})
         })
     }
 
@@ -184,6 +187,13 @@ class Dashboard extends React.Component{
         .catch(err => console.log(err))
     }
 
+    deleteTaskListener = () => {
+        firebase.database().ref(`/boardData/${this.props.selectedBoard.id}/${this.props.match.params.subBoardId}`).on("child_removed", snap => {
+            const final = this.state.tasks.reduce(task => task.id != snap.val().id)
+            this.setState({tasks : final})
+        })
+    }
+
     render(){
         const {temp_Array, tempRows} = this.state;
         if(this.props.selectedBoard && this.props.match.params.subBoardId){
@@ -206,7 +216,7 @@ class Dashboard extends React.Component{
                                 </TableHead>
     
                                 <SortableContainer2 onSortEnd={this.onSortEnd} useDragHandle lockAxis="y" lockToContainerEdges={true}>
-                                    {this.state.tasks.map((value, index) => <SortableItem subBoardId={this.props.match.params.subBoardId} boardId={this.props.selectedBoard.id} key={index} index={index} value={value}/>)}
+                                    {this.state.tasks.length ? this.state.tasks.map((value, index) => <SortableItem subBoardId={this.props.match.params.subBoardId} boardId={this.props.selectedBoard.id} key={index} index={index} value={value}/>) : null}
                                 </SortableContainer2>
                             </Table>
                         </Paper>

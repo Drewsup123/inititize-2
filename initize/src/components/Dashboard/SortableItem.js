@@ -42,6 +42,10 @@ const SortableItem = sortableElement(({value, index, boardId, subBoardId}) => {
             setEditMode(false);
         }
 
+        const handleDelete = () => {
+            firebase.database().ref(`/boardData/${boardId}/${subBoardId}/tasks`).child(value.id).remove();
+        }
+
         const setColor = {
             inProgress : {backgroundColor : "yellow"},
             done : {backgroundColor : "green"},
@@ -65,10 +69,10 @@ const SortableItem = sortableElement(({value, index, boardId, subBoardId}) => {
                             id="title"
                             name="title"
                             type="text"
-                            value={edits.title}
+                            value={edits.title || ""}
                             onChange={handleChange}
                             /> 
-                        : Value.title
+                        : Value.title || ""
                         }
                     </TableCell>
 
@@ -76,7 +80,7 @@ const SortableItem = sortableElement(({value, index, boardId, subBoardId}) => {
                         {editMode 
                         ? <Select 
                             onChange={handleChange} 
-                            value={edits.priority} 
+                            value={edits.priority || ""} 
                             name="priority"  
                             open={prioritySelectOpen}
                             onOpen={() => handleSelectState("priority")}
@@ -87,7 +91,7 @@ const SortableItem = sortableElement(({value, index, boardId, subBoardId}) => {
                             <MenuItem value="low">Low</MenuItem>
                             <MenuItem value="very low">Very Low</MenuItem>
                         </Select>
-                        : Value.priority
+                        : Value.priority || ""
                         }
                     </TableCell>
 
@@ -99,10 +103,10 @@ const SortableItem = sortableElement(({value, index, boardId, subBoardId}) => {
                             id="user"
                             name="user"
                             type="text"
-                            value={edits.user}
+                            value={edits.user || ""}
                             onChange={handleChange}
                             /> 
-                        : Value.user
+                        : Value.user || ""
                         }
                     </TableCell>
 
@@ -110,7 +114,7 @@ const SortableItem = sortableElement(({value, index, boardId, subBoardId}) => {
                         {editMode 
                         ? <Select 
                             onChange={handleChange} 
-                            value={edits.status} 
+                            value={edits.status || ""} 
                             name="status"  
                             open={statusSelectOpen}
                             onOpen={() => handleSelectState("status")}
@@ -121,7 +125,7 @@ const SortableItem = sortableElement(({value, index, boardId, subBoardId}) => {
                             <MenuItem value="Needs Work">Needs Work</MenuItem>
                             <MenuItem value="Not Started">Not Started</MenuItem>
                         </Select> 
-                        : Value.status
+                        : Value.status || ""
                         }
                     </TableCell>
 
@@ -133,10 +137,10 @@ const SortableItem = sortableElement(({value, index, boardId, subBoardId}) => {
                             id="description"
                             name="description"
                             type="text"
-                            value={edits.description}
+                            value={edits.description || ""}
                             onChange={handleChange}
                             /> 
-                        : Value.description
+                        : Value.description || ""
                         }
                     </TableCell>
 
@@ -148,18 +152,18 @@ const SortableItem = sortableElement(({value, index, boardId, subBoardId}) => {
                             id="notes"
                             name="notes"
                             type="text"
-                            value={edits.notes}
+                            value={edits.notes || ""}
                             onChange={handleChange}
                             /> 
                         : 
-                        Value.notes
+                        Value.notes || ""
                         }
                     </TableCell>
 
                     <TableCell>
                         {editMode 
                             ?<CancelIcon onClick={() => setEditMode(false)}/>
-                            :<DeleteIcon />
+                            :<DeleteIcon onClick={()=> handleDelete()}/>
                         }
                         {editMode 
                             ? <SaveIcon onClick={() => onSubmitEdits()}/> 
