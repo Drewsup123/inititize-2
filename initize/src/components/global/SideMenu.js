@@ -25,6 +25,14 @@ import {connect} from 'react-redux';
 import Tooltip from '@material-ui/core/Tooltip';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormControl from '@material-ui/core/FormControl';
+import FormLabel from '@material-ui/core/FormLabel';
+import ChatIcon from '@material-ui/icons/Chat';
+import AssignmentIcon from '@material-ui/icons/Assignment';
 import {createdBoard, changeSelected} from "../../redux/actions";
 import {Link} from "react-router-dom";
 import moment from 'moment';
@@ -68,6 +76,7 @@ function SideMenu(props){
     const [open, setOpen] = React.useState(false);
     const [name, setName] = React.useState(false);
     const [subBoardName, setSubBoardName] = React.useState("");
+    const [subBoardType, setSubBoardType] = React.useState("Board")
     const [subBoardOpen, setSubBoardOpen] = React.useState(false);
     const [subBoards, setSubBoards] = React.useState([]);
     const [subBoardsCollapseOpen, setSubBoardsCollapseOpen] = React.useState(false);
@@ -135,9 +144,10 @@ function SideMenu(props){
     }
 
     const addSubBoard = () => {
-        if(subBoardName){
+        if(subBoardName && subBoardType === "Board"){
             firebase.database().ref(`/boardData/${props.selectedBoard.id}/${subBoardName}`).set({
                 name : subBoardName,
+                type : "board",
                 tasks : []
             }).then(() => {
                 setSubBoardOpen(false);
@@ -146,11 +156,28 @@ function SideMenu(props){
             .catch(err => {
                 alert("There was an error creating the sub-board please try again.")
             })
-        }else{
-            alert("Please input a name for the board")
+        }
+        if(subBoardName && subBoardType === "Chatroom"){
+            firebase.database().ref(`/boardData/${props.selectedBoard.id}/${subBoardName}`).set({
+                name : subBoardName,
+                type : "chatroom",
+                messages : []
+            }).then(() => {
+                setSubBoardOpen(false);
+                getSubBoards();
+            })
+            .catch(err => {
+                alert("There was an error creating the chatroom please try again.")
+            })
+        }
+        else{
+            alert(`Please input a name for the ${subBoardType.toLowerCase()}`)
         }
     }
 
+    const handleRadioChange = e => {
+        setSubBoardType(e.target.value)
+    }
     
     const newSubBoardListener = () => {
         firebase.database().ref(`/boardData/${props.selectedBoard.id}`).on('child_added', snap => {
@@ -212,8 +239,12 @@ function SideMenu(props){
                                 <List component="div" disablePadding>
                                     {subBoards.length 
                                         ? subBoards.map(board => 
-                                            <Link style={{color : "black", textDecoration : "none"}} to={`/dashboard/${props.selectedBoard.id}/${board.name}`}>
+                                            <Link 
+                                                style={{color : "black", textDecoration : "none"}} 
+                                                to={board.type === "board" ? `/dashboard/${props.selectedBoard.id}/${board.name}` : `/dashboard/${props.selectedBoard.id}/chatroom/${board.name}`}
+                                            >
                                                 <ListItem button>
+                                                    <ListItemIcon>{board.type === "board" ? <AssignmentIcon/> : <ChatIcon />}</ListItemIcon>
                                                     <ListItemText>{board.name}</ListItemText>
                                                 </ListItem>
                                             </Link>
@@ -266,18 +297,32 @@ function SideMenu(props){
             <Dialog open={subBoardOpen} onClose={() => setSubBoardOpen(false)} aria-labelledby="form-dialog-title">
                 <DialogTitle id="form-dialog-title">Create A Board</DialogTitle>
                 <DialogContent>
-                <DialogContentText>
-                    Create a new sub-board to help separate tasks for your team.
-                </DialogContentText>
-                <TextField
-                    autoFocus
-                    margin="dense"
-                    id="name"
-                    label="Board Name"
-                    type="text"
-                    fullWidth
-                    onChange={(e) => setSubBoardName(e.target.value)}
-                />
+                    <DialogContentText>
+                        Create a new sub-board to help separate tasks for your team.
+                    </DialogContentText>
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        id="name"
+                        label="Board Name"
+                        type="text"
+                        fullWidth
+                        onChange={(e) => setSubBoardName(e.target.value)}
+                    />
+
+                    <FormControl component="fieldset">
+                        <FormLabel component="legend">Type</FormLabel>
+                        <RadioGroup
+                            aria-label="Type"
+                            name="subBoardType"
+                            value={subBoardType}
+                            onChange={handleRadioChange}
+                            style={{display : "flex", flexDirection : "row"}}
+                        >
+                            <FormControlLabel value="Board" control={<Radio />} label="Board" />
+                            <FormControlLabel value="Chatroom" control={<Radio />} label="Chatroom" />
+                        </RadioGroup>
+                    </FormControl>
                 </DialogContent>
                 <DialogActions>
                 <Button onClick={() => setSubBoardOpen(false)} color="primary">

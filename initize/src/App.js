@@ -10,6 +10,7 @@ import Dashboard from './pages/Dashboard';
 import AccountSettings from './pages/accountSettings';
 //Component Imports
 import SideMenu from './components/global/SideMenu';
+import ChatRoom from './components/Dashboard/chatRoom';
 
 function App(props) {
   return (
@@ -19,6 +20,7 @@ function App(props) {
       <Route path="/authenticate" render={() => <SignUp {...props}/>} />
       <div className="dashboard-content">
         <Route 
+          exact
           path="/dashboard/:id/:subBoardId?" 
           render={(props) => 
             <Dashboard 
@@ -27,6 +29,14 @@ function App(props) {
               : props.match.params.id} 
               {...props}
             />} 
+          />
+          <Route path="/dashboard/:id/chatroom/:subBoardId?" 
+            render={(props) => <ChatRoom 
+              key={props.match.params.subBoardId 
+                ? props.match.params.subBoardId
+                : props.match.params.id}
+                {...props}
+            />}
           />
         <Route path="/account-settings" render={() => <AccountSettings />} />
       </div>
