@@ -5,6 +5,11 @@ class ChatRoom extends React.Component{
         this.state = {
             newMessage : '',
             messages : [],
+            messagesLoading : false,
+            messagesEmpty : false,
+            searchTerm : "",
+            searchResults : [],
+            searchLoading : false,
         }
     }
 
