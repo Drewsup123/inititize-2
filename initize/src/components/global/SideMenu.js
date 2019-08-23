@@ -7,6 +7,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import SettingsIcon from '@material-ui/icons/Settings';
 import MailIcon from '@material-ui/icons/Mail';
+import EditIcon from '@material-ui/icons/Edit';
 import TopNav from './AppBar';
 import Paper from '@material-ui/core/Paper'
 import Avatar from '@material-ui/core/Avatar';
@@ -33,6 +34,7 @@ import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 import ChatIcon from '@material-ui/icons/Chat';
 import AssignmentIcon from '@material-ui/icons/Assignment';
+import VerticalAlignBottomIcon from '@material-ui/icons/VerticalAlignBottom';
 import {createdBoard, changeSelected} from "../../redux/actions";
 import {Link} from "react-router-dom";
 import moment from 'moment';
@@ -68,7 +70,17 @@ const useStyles = makeStyles(theme => ({
         display:"flex",
         flexDirection : "column",
         alignItems : "center"
-    }
+    },
+    '@media(max-width : 1700px)' : {
+        sidemenu : {
+            width : "18%"
+        }
+    },
+    '@media(max-width : 1200px)' : {
+        sidemenu : {
+            width : "25%"
+        }
+    },
 }));
 
 function SideMenu(props){
@@ -80,6 +92,10 @@ function SideMenu(props){
     const [subBoardOpen, setSubBoardOpen] = React.useState(false);
     const [subBoards, setSubBoards] = React.useState([]);
     const [subBoardsCollapseOpen, setSubBoardsCollapseOpen] = React.useState(false);
+    const [inviteOpen, setInviteOpen] = React.useState(false);
+    const [inviteCode, setInviteCode] = React.useState("");
+    const [joinModalOpen, setJoinModalOpen] = React.useState(false);
+    const [code, setCode] = React.useState("");
 
     useEffect(() => {
         getSubBoards();
@@ -91,7 +107,7 @@ function SideMenu(props){
 
     const createBoard = () => {
         const key = firebase.database().ref('/boards').push().key;
-        firebase.database().ref('/boards/' + key).set({
+        const board = {
             boardName : name,
             createdAt : Date.now(),
             id : key,
@@ -101,18 +117,15 @@ function SideMenu(props){
                 email : props.user.email,
                 uid : props.user.uid
             },
-            users : [],
-            plan : "FREE"
-        }).then(res => {
-            firebase.database().ref('/users/' + props.user.uid + '/boards').push().set({
-                id : key,
-                boardImage : "",
-                boardName : name
-            }).then(res => {
+        }
+        firebase.database().ref('/boards/' + key).set(
+            board
+        ).then(res => {
+            firebase.database().ref('/users/' + props.user.uid + '/boards').push().set(
+                board
+            ).then(res => {
                 props.createdBoard({
-                    id : key,
-                    boardImage : "",
-                    boardName : name
+                    board
                 })
             }).catch(err => {
                 alert("Error");
@@ -157,7 +170,7 @@ function SideMenu(props){
                 alert("There was an error creating the sub-board please try again.")
             })
         }
-        if(subBoardName && subBoardType === "Chatroom"){
+        else if(subBoardName && subBoardType === "Chatroom"){
             firebase.database().ref(`/boardData/${props.selectedBoard.id}/${subBoardName}`).set({
                 name : subBoardName,
                 type : "chatroom",
@@ -186,6 +199,44 @@ function SideMenu(props){
         })
     }
     
+    const generateInviteCode = () => {
+        const key = firebase.database().ref('/invites/').push().key;
+        firebase.database().ref('/invites/').child(key).set({
+            roomId : props.selectedBoard.id,
+            createdAt : Date.now(),
+        }).then(() => {
+            setInviteCode(key)
+        })
+        .catch(err => {
+            alert("There was an error generating the invite link");
+            console.log(err);
+        })
+    }
+
+    const joinRoom = () => {
+        if(code){
+            firebase.database().ref('/invites/').child(code).once('value', snap => {
+                if(snap.val()){
+                    const invite = snap.val();
+                    firebase.database().ref('/boards/').child(invite.roomId).once('value', snap => {
+                        const board = snap.val();
+                        if(board){
+                            console.log(board);
+                            firebase.database().ref(`/users/${props.user.uid}/`).child('boards').push().set(board);
+                            props.createdBoard(board)
+                        }else{
+                            alert("Board does not exist");
+                        }
+                    });
+                }else{
+                    alert("Invite code doesn't exist")
+                }
+            })
+        }else{
+            alert("Invite Code cannot be empty")
+        }
+        setJoinModalOpen(false);
+    }
 
     if(props.location.pathname === '/' || props.location.pathname === "/authenticate"){
         return null;
@@ -197,6 +248,7 @@ function SideMenu(props){
             <div className={classes.sidemenu}>
                 <div className={classes.sidemenuBoards}>
                 <Avatar onClick={() => setOpen(true)} style={{backgroundColor:"grey", cursor : "pointer"}} ><AddIcon /></Avatar>
+                <Avatar onClick={() => setJoinModalOpen(true)} style={{backgroundColor:"grey", cursor : "pointer"}}><VerticalAlignBottomIcon /></Avatar>
                     {boards.map(board => 
                     <Tooltip key={board.id} title={board.boardName} placement="right">
                         <Avatar 
@@ -209,6 +261,7 @@ function SideMenu(props){
                     </Tooltip>
                     )}
                 </div>
+
                 <div className={classes.sidemenuContent}>
                     <Divider />
                     <Paper style={{display:"flex", justifyContent : "center", alignItems : "center", flexDirection : "column", background : "grey", padding : "2%", width : "80%"}}>
@@ -225,6 +278,18 @@ function SideMenu(props){
                     </Paper>
 
                     <Divider />
+
+                    {
+                    Object.keys(props.selectedBoard).length && props.selectedBoard.owner.uid === props.user.uid 
+                    ?
+                        <Button>
+                            <SettingsIcon />
+                            Board Settings
+                        </Button>
+                    :
+                        null
+                    }
+
                     <List>
                         {
                             props.selectedBoard.id 
@@ -260,7 +325,8 @@ function SideMenu(props){
                         }
                         <ListItem>
                             <ListItemIcon><MailIcon /></ListItemIcon>
-                            <ListItemText primary='Messages' />
+                            <ListItemText primary={`Members ${props.selectedBoard.users ? `(${props.selectedBoard.users.length + 1})` : ""}`} />
+                            <ListItemIcon><AddIcon onClick={()=>setInviteOpen(true)}/></ListItemIcon>
                         </ListItem>
                     </List>
                 </div>
@@ -330,6 +396,56 @@ function SideMenu(props){
                 </Button>
                 <Button onClick={() => addSubBoard()} color="primary">
                     Create
+                </Button>
+                </DialogActions>
+            </Dialog>
+
+            {/* Invite Member modal */}
+            <Dialog open={inviteOpen} onClose={() => setInviteOpen(false)} aria-labelledby="form-dialog-title">
+                <DialogTitle id="form-dialog-title">Invite Members</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        Invite other members to view and edit your boards. Codes last for 24 hours.
+                    </DialogContentText>
+                    <DialogContentText>
+                        Code : {inviteCode}
+                    </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                    
+                    <Button onClick={() => inviteOpen(false)} color="primary">
+                        Cancel
+                    </Button>
+
+                    <Button onClick={generateInviteCode} color="primary">
+                        Generate Code
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+            {/* Join Board Modal */}
+            <Dialog open={joinModalOpen} onClose={() => setJoinModalOpen(false)} aria-labelledby="form-dialog-title">
+                <DialogTitle id="form-dialog-title">Join A Board</DialogTitle>
+                <DialogContent>
+                <DialogContentText>
+                    Copy and pase invite code below.
+                </DialogContentText>
+                <TextField
+                    autoFocus
+                    margin="dense"
+                    id="name"
+                    label="Invite Code"
+                    type="text"
+                    fullWidth
+                    onChange={(e) => setCode(e.target.value)}
+                />
+                </DialogContent>
+                <DialogActions>
+                <Button onClick={() => setJoinModalOpen(false)} color="primary">
+                    Cancel
+                </Button>
+                <Button onClick={joinRoom} color="primary">
+                    Join
                 </Button>
                 </DialogActions>
             </Dialog>

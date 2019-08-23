@@ -64,7 +64,7 @@ class ChatRoom extends React.Component{
     render(){
         return(
             <div className="chatroom">
-                <List>
+                <List style={{maxHeight : "85vh", overflowY:"scroll"}}>
                     {
                         this.state.messages.length 
                         ? 

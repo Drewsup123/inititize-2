@@ -71,7 +71,7 @@ class SignUp extends Component {
 
     handleChange = e => {
         this.setState({[e.target.name] : e.target.value});
-        console.log(this.state);
+        // console.log(this.state);
     }
 
     handleSignUp = (e) => {
@@ -94,7 +94,7 @@ class SignUp extends Component {
                 })
                 .catch(err => {
                     this.setState({error : "Sorry there was a problem signing you in"});
-                    console.log(err)
+                    // console.log(err)
                 })
             })
             .catch(err => {
