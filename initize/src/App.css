@@ -7,3 +7,15 @@
     margin-left : 12.5%;
     width:87.3%;
 }
+@media(max-width : 1700px){
+    .dashboard-content{
+        margin-left : 18.5%;
+        width : 81.5%
+    }
+}
+@media(max-width : 1200px){
+    .dashboard-content{
+        margin-left : 25.5%;
+        width : 74.5%
+    }
+}
