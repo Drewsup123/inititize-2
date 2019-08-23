@@ -252,6 +252,7 @@ function SideMenu(props){
                     {boards.map(board => 
                     <Tooltip key={board.id} title={board.boardName} placement="right">
                         <Avatar 
+                            key={board.id}
                             style={{cursor:"pointer"}} 
                             className={classes.avatar}
                             onClick={() => changeSelected(board)}
@@ -305,6 +306,7 @@ function SideMenu(props){
                                     {subBoards.length 
                                         ? subBoards.map(board => 
                                             <Link 
+                                                key={board.id}
                                                 style={{color : "black", textDecoration : "none"}} 
                                                 to={board.type === "board" ? `/dashboard/${props.selectedBoard.id}/${board.name}` : `/dashboard/${props.selectedBoard.id}/chatroom/${board.name}`}
                                             >
