@@ -34,23 +34,6 @@ const SortableContainer2 = sortableContainer(({children}) => {
     )
 })
 
-const SortableItem2 = sortableElement(({value}) =>
-        <React.Fragment>
-            <TableRow style={{width : "100%"}}>
-                <TableCell><DragHandle/></TableCell>
-                <TableCell component="th" scope="row">
-                    {value.title}
-                </TableCell>
-                <TableCell>{value.priority}</TableCell>
-                <TableCell>{value.user}</TableCell>
-                <TableCell>{value.status}</TableCell>
-                <TableCell>{value.description}</TableCell>
-                <TableCell>{value.notes}</TableCell>
-                <TableCell><DeleteIcon /><EditIcon /></TableCell>
-            </TableRow>
-        </React.Fragment>
-)
-
 class Dashboard extends React.Component{
     constructor(){
         super();
@@ -211,7 +194,6 @@ class Dashboard extends React.Component{
     }
 
     render(){
-        const {temp_Array, tempRows} = this.state;
         if(this.props.selectedBoard && this.props.match.params.subBoardId){
             return(
                 <React.Fragment>

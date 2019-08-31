@@ -124,9 +124,9 @@ function SideMenu(props){
             firebase.database().ref('/users/' + props.user.uid + '/boards').push().set(
                 board
             ).then(res => {
-                props.createdBoard({
+                props.createdBoard(
                     board
-                })
+                )
             }).catch(err => {
                 alert("Error");
                 console.log(err);
