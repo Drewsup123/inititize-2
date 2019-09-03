@@ -1,0 +1,141 @@
+// Condensed this down into one file. All components were in separate files
+// Imports were also removed but the project made use of Material-UI and react-sortable-hoc
+
+const SortableContainer = sortableContainer(({children}) => {
+    return(
+            <TableBody style={{width : "100%"}}>
+                {children}
+            </TableBody>
+    )
+})
+
+// functional component using hooks, it did allow a user to edit any part but that part was cut out/
+const SortableItem = sortableElement(({value, index, boardId, subBoardId}) => {
+    const [editMode, setEditMode] = React.useState(false);
+    const [Value, setValue] = React.useState(value)
+    // all inner functions of this component were removed to keep it under a hundred lines
+    return(
+            <TableRow style={editMode ? {width : "100%", borderLeft:"1px solid blue"} : {width : "100%"}}>
+                <TableCell><DragHandle/></TableCell>
+
+                <TableCell component="th" scope="row">
+                    { Value.title || "" }
+                </TableCell>
+
+                <TableCell >
+                    { Value.priority || "" }
+                </TableCell>
+
+                <TableCell>
+                    { Value.user || "" }
+                </TableCell>
+
+                <TableCell>
+                    { Value.status || "" }
+                </TableCell>
+
+                <TableCell>
+                    { Value.description || "" }
+                </TableCell>
+
+                <TableCell>
+                { Value.notes || "" }
+                </TableCell>
+
+                <TableCell>
+                    {editMode 
+                        ?<CancelIcon onClick={() => setEditMode(false)}/>
+                        :<DeleteIcon onClick={()=> handleDelete()}/>
+                    }
+                    {editMode 
+                        ? <SaveIcon onClick={() => onSubmitEdits()}/> 
+                        : <EditIcon 
+                            onClick={() => setEditMode(!editMode)}
+                        />
+                    }
+                </TableCell>
+            </TableRow>
+    )
+}
+)
+
+// Main Component that renders the dashboard
+class Dashboard extends React.Component{
+    constructor(){
+        super();
+        this.state = {
+            open : false,
+            newTask : {},
+            tasks : [],
+        }
+    }
+
+    componentDidMount(){
+        if(this.props.match.params.subBoardId != undefined){
+            this.newTaskListener();
+            this.deleteTaskListener();
+        }
+    }
+
+    newTaskListener = () => {
+        let newTasks = [];
+        firebase.database()
+        .ref(`/boardData/${this.props.selectedBoard.id}/${this.props.match.params.subBoardId}`)
+        .child("tasks")
+        .on('child_added', snap => {
+            newTasks.push(snap.val());
+            this.setState({tasks : newTasks})
+        })
+    }
+
+    // function that runs when an element is dragged to another location
+    onSortEnd = ({oldIndex, newIndex}) => {
+        let copy = [...this.state.tasks];
+        copy = arrayMove(copy, oldIndex, newIndex);
+        this.setState({tasks : copy})
+    };
+
+    render(){
+        return(
+            <div className="dashboard">
+                <Paper>
+                    <Table>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell></TableCell>
+                                <TableCell>Task</TableCell>
+                                <TableCell>Priority</TableCell>
+                                <TableCell>User</TableCell>
+                                <TableCell>Status</TableCell>
+                                <TableCell>Description</TableCell>
+                                <TableCell>Notes</TableCell>
+                                <TableCell>
+                                    <AddIcon 
+                                        style={{cursor : "pointer"}} 
+                                        onClick={this.handleOpen}
+                                    />
+                                </TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <SortableContainer onSortEnd={this.onSortEnd} useDragHandle lockAxis="y" lockToContainerEdges={true}>
+                            {
+                                this.state.tasks.length 
+                                ?
+                                this.state.tasks.map((value, index) => 
+                                    <SortableItem 
+                                        subBoardId={this.props.match.params.subBoardId} 
+                                        boardId={this.props.selectedBoard.id} 
+                                        key={value.id} 
+                                        index={index}
+                                        value={value}
+                                    />
+                                )
+                                :null
+                            }
+                        </SortableContainer>
+                    </Table>
+                </Paper>
+            </div>
+        )
+    }
+}

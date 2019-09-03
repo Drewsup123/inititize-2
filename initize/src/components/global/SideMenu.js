@@ -325,11 +325,17 @@ function SideMenu(props){
                                 <ListItemText primary='Create A Board To Get Started' />
                             </ListItem>
                         }
+                        <Divider />
                         <ListItem>
                             <ListItemIcon><MailIcon /></ListItemIcon>
                             <ListItemText primary={`Members ${props.selectedBoard.users ? `(${props.selectedBoard.users.length + 1})` : ""}`} />
                             <ListItemIcon><AddIcon onClick={()=>setInviteOpen(true)}/></ListItemIcon>
                         </ListItem>
+                        <List>
+                            <ListItem>
+                                <ListItemText primary={`(Owner) ${props.selectedBoard.owner.username}`} />
+                            </ListItem>
+                        </List>
                     </List>
                 </div>
             </div>

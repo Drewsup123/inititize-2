@@ -26,7 +26,7 @@ import SortableItem from '../components/Dashboard/SortableItem';
 
 const DragHandle = sortableHandle(() => <span style={{cursor : "row-resize"}}>:::</span>);
 
-const SortableContainer2 = sortableContainer(({children}) => {
+const SortableContainer = sortableContainer(({children}) => {
     return(
             <TableBody style={{width : "100%"}}>
                 {children}
@@ -209,11 +209,16 @@ class Dashboard extends React.Component{
                                         <TableCell>Status</TableCell>
                                         <TableCell>Description</TableCell>
                                         <TableCell>Notes</TableCell>
-                                        <TableCell><AddIcon style={{cursor : "pointer"}} onClick={this.handleOpen}/></TableCell>
+                                        <TableCell>
+                                            <AddIcon 
+                                                style={{cursor : "pointer"}} 
+                                                onClick={this.handleOpen}
+                                            />
+                                        </TableCell>
                                     </TableRow>
                                 </TableHead>
     
-                                <SortableContainer2 onSortEnd={this.onSortEnd} useDragHandle lockAxis="y" lockToContainerEdges={true}>
+                                <SortableContainer onSortEnd={this.onSortEnd} useDragHandle lockAxis="y" lockToContainerEdges={true}>
                                     {
                                         this.state.tasks.length ?
                                         this.state.tasks.map((value, index) => 
@@ -227,7 +232,7 @@ class Dashboard extends React.Component{
                                             )
                                         :null
                                     }
-                                </SortableContainer2>
+                                </SortableContainer>
                             </Table>
                         </Paper>
                     </div>
