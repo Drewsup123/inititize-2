@@ -39,7 +39,7 @@ const SortableItem = sortableElement(({value, index, boardId, subBoardId}) => {
                 </TableCell>
 
                 <TableCell>
-                { Value.notes || "" }
+                    { Value.notes || "" }
                 </TableCell>
 
                 <TableCell>
