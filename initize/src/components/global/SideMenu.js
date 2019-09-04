@@ -241,9 +241,9 @@ function SideMenu(props){
     if(props.location.pathname === '/' || props.location.pathname === "/authenticate"){
         return null;
     }
+    
     if(props.location.pathname !== '/' || props.location.pathname !== "/authenticate"){
         if(props.loggedIn === false){
-            alert("Redirecting");
             return <Redirect to="/authenticate" />
         }
     }
@@ -338,9 +338,17 @@ function SideMenu(props){
                             <ListItemIcon><AddIcon onClick={()=>setInviteOpen(true)}/></ListItemIcon>
                         </ListItem>
                         <List>
-                            <ListItem>
-                                <ListItemText primary={`(Owner) ${props.selectedBoard.owner.username}`} />
-                            </ListItem>
+                            {
+                                props.selectedBoard.owner && props.selectedBoard.users 
+                                ? 
+                                <ListItem>
+                                    <ListItemText primary={`(Owner) ${props.selectedBoard.owner.username}`} />
+                                </ListItem>
+                                :
+                                <ListItem>
+                                    <ListItemText primary="No Users Yet" />
+                                </ListItem>
+                            }
                         </List>
                     </List>
                 </div>
