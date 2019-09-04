@@ -43,18 +43,23 @@ class ChatRoom extends React.Component{
     }
 
     addMessage = e => {
-        e.preventDefault();
-        firebase.database().ref(`/boardData/${this.props.selectedBoard.id}/${this.props.match.params.subBoardId}`)
-        .child("messages")
-        .push().set({
-            text : this.state.newMessage,
-            title : this.state.newMessageTitle,
-            user : {
-                username : this.props.user.username,
-                profilePicture : this.props.user.profilePicture,
-                uid : this.props.user.uid,
-            }
-        })
+        if(this.state.message){
+            e.preventDefault();
+            firebase.database().ref(`/boardData/${this.props.selectedBoard.id}/${this.props.match.params.subBoardId}`)
+            .child("messages")
+            .push().set({
+                text : this.state.newMessage,
+                title : this.state.newMessageTitle,
+                user : {
+                    username : this.props.user.username,
+                    profilePicture : this.props.user.profilePicture,
+                    uid : this.props.user.uid,
+                }
+            })
+            this.setState({newMessageTitle : "", newMessage : ""})
+        }else{
+            alert("You need to input a message");
+        }
     }
 
     handleChange = e => {
