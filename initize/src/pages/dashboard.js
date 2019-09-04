@@ -348,7 +348,8 @@ const mapStateToProps = state => {
     return {
         user : state.user,
         selectedBoard : state.selectedBoard,
-        boards : state.boards
+        boards : state.boards,
+        loggedIn : state.loggedIn,
     }
 }
 

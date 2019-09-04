@@ -36,7 +36,7 @@ import ChatIcon from '@material-ui/icons/Chat';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import VerticalAlignBottomIcon from '@material-ui/icons/VerticalAlignBottom';
 import {createdBoard, changeSelected} from "../../redux/actions";
-import {Link} from "react-router-dom";
+import {Link, Redirect} from "react-router-dom";
 import moment from 'moment';
 
 const useStyles = makeStyles(theme => ({
@@ -98,12 +98,12 @@ function SideMenu(props){
     const [code, setCode] = React.useState("");
 
     useEffect(() => {
+        newSubBoardListener()
+    }, [])
+
+    useEffect(() => {
         getSubBoards();
     }, [props.selectedBoard]);
-
-    useEffect(() => 
-        newSubBoardListener()
-    , [])
 
     const createBoard = () => {
         const key = firebase.database().ref('/boards').push().key;
@@ -240,6 +240,12 @@ function SideMenu(props){
 
     if(props.location.pathname === '/' || props.location.pathname === "/authenticate"){
         return null;
+    }
+    if(props.location.pathname !== '/' || props.location.pathname !== "/authenticate"){
+        if(props.loggedIn === false){
+            alert("Redirecting");
+            return <Redirect to="/authenticate" />
+        }
     }
     const {user, boards} = props;
     return(
@@ -466,6 +472,7 @@ const mapStateToProps = state => {
         user : state.user,
         boards : state.boards,
         selectedBoard : state.selectedBoard,
+        loggedIn : state.loggedIn,
     }
 }
 

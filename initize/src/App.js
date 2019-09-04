@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 // Router Imports
-import { Route, withRouter } from 'react-router-dom';
+import { Route, withRouter, Redirect } from 'react-router-dom';
 import {connect} from 'react-redux';
 // Page Imports
 import LandingPage from './pages/LandingPage';
@@ -31,12 +31,14 @@ function App(props) {
             />} 
           />
           <Route path="/dashboard/:id/chatroom/:subBoardId?" 
-            render={(props) => <ChatRoom 
+            render={(props) => 
+            <ChatRoom 
               key={props.match.params.subBoardId 
                 ? props.match.params.subBoardId
                 : props.match.params.id}
                 {...props}
-            />}
+            />
+          }
           />
         <Route path="/account-settings" render={() => <AccountSettings />} />
       </div>
@@ -44,4 +46,8 @@ function App(props) {
   );
 }
 
-export default withRouter(App);
+const mapStateToProps = state => {
+  return {loggedIn : state.loggedIn,}
+}
+
+export default connect(mapStateToProps)(withRouter(App));

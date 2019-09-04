@@ -46,14 +46,19 @@ const SortableItem = sortableElement(({value, index, boardId, subBoardId}) => {
             firebase.database().ref(`/boardData/${boardId}/${subBoardId}/tasks`).child(value.id).remove();
         }
 
-        const setColor = {
-            inProgress : {backgroundColor : "yellow"},
+        const setColor = string => {
+            const styles = {
+            inprogress : {backgroundColor : "yellow"},
             done : {backgroundColor : "green"},
-            notStarted : {backgroundColor : "red"},
-            needsWork : {backgroundColor : "lime"},
+            notstarted : {backgroundColor : "red"},
+            needswork : {backgroundColor : "green"},
             critical : {backgroundColor : "red"},
             important : {backgroundColor : "yellow"},
             low : {backgroundColor : "green"},
+            }
+            const s = string.toLowerCase().replace(' ','');
+            console.log(s, styles[s])
+            return styles[s]
         }
 
         return(
@@ -76,7 +81,7 @@ const SortableItem = sortableElement(({value, index, boardId, subBoardId}) => {
                         }
                     </TableCell>
 
-                    <TableCell >
+                    <TableCell style={setColor(Value.priority)}>
                         {editMode 
                         ? <Select 
                             onChange={handleChange} 
@@ -110,7 +115,7 @@ const SortableItem = sortableElement(({value, index, boardId, subBoardId}) => {
                         }
                     </TableCell>
 
-                    <TableCell>
+                    <TableCell style={setColor(Value.status)} >
                         {editMode 
                         ? <Select 
                             onChange={handleChange} 

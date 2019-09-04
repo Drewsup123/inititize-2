@@ -10,7 +10,11 @@ class AccountSettings extends React.Component{
         return(
             <div>
                 <h1>Account Settings</h1>
-                <h2>{this.props.user.username}</h2>
+                <h2>Username : {this.props.user.username}</h2>
+                <h2>Email : {this.props.user.email}</h2>
+                <h2>Password : Change Password</h2>
+                <h2>Profile Picture : Change Profile Picture</h2>
+                <h2>Joined/Created Boards</h2>
             </div>
         );
     }
