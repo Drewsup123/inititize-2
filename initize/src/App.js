@@ -40,7 +40,7 @@ function App(props) {
             />
           }
           />
-        <Route path="/account-settings" render={() => <AccountSettings />} />
+        <Route path="/account-settings" render={props => <AccountSettings {...props}/>} />
       </div>
     </div>
   );

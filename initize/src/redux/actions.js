@@ -5,7 +5,8 @@
 export const SIGN_UP = "SIGN_UP";
 export const LOGIN = "LOGIN";
 export const CREATED_BOARD = "CREATED_BOARD";
-export const CHANGE_SELECTED = "CHANGE_SELECTED"
+export const CHANGE_SELECTED = "CHANGE_SELECTED";
+export const SIGNOUT = "SIGNOUT"
 // export const ADDBOARD = "ADD_BOARD";
 // export const ADDBOARDID = "ADDBOARDID"
 
@@ -23,6 +24,10 @@ export const createdBoard = (payload) => dispatch => {
 
 export const changeSelected = payload => dispatch => {
     dispatch({type:CHANGE_SELECTED, payload : payload})
+}
+
+export const signOut = () => dispatch => {
+    dispatch({type : SIGNOUT})
 }
 
 // export const addBoardId = payload => dispatch => {

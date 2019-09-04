@@ -1,9 +1,20 @@
 import React from 'react';
-import {connect} from 'react-redux'
+import {connect} from 'react-redux';
+import * as firebase from 'firebase';
+import {signOut} from '../redux/actions';
 
 class AccountSettings extends React.Component{
     constructor(){
         super();
+    }
+
+    signOut = () => {
+        if(window.confirm("Are you sure you want to sign out?")){
+            firebase.auth().signOut();
+            this.props.signOut();
+        }else{
+            return;
+        }
     }
 
     render(){
@@ -15,6 +26,7 @@ class AccountSettings extends React.Component{
                 <h2>Password : Change Password</h2>
                 <h2>Profile Picture : Change Profile Picture</h2>
                 <h2>Joined/Created Boards</h2>
+                <button onClick={this.signOut}>SignOut</button>
             </div>
         );
     }
@@ -26,4 +38,4 @@ const mapStateToProps = state => {
     }
 }
 
-export default connect(mapStateToProps)(AccountSettings);
+export default connect(mapStateToProps, {signOut})(AccountSettings);
