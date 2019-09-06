@@ -23,6 +23,7 @@ class ChatRoom extends React.Component{
             searchTerm : "",
             searchResults : [],
             searchLoading : false,
+            file : "",
         }
     }
 
@@ -43,7 +44,7 @@ class ChatRoom extends React.Component{
     }
 
     addMessage = e => {
-        if(this.state.message){
+        if(this.state.newMessage){
             e.preventDefault();
             firebase.database().ref(`/boardData/${this.props.selectedBoard.id}/${this.props.match.params.subBoardId}`)
             .child("messages")
@@ -58,8 +59,17 @@ class ChatRoom extends React.Component{
             })
             this.setState({newMessageTitle : "", newMessage : ""})
         }else{
+            e.preventDefault();
             alert("You need to input a message");
         }
+    }
+
+    uploadImage = () => {
+        
+    }
+
+    setFile = e => {
+        this.setState({file : e.target.files[0]});
     }
 
     handleChange = e => {
@@ -124,6 +134,7 @@ class ChatRoom extends React.Component{
                             style={{width: "70%"}}
                         />
                         <button style={{width : "10%"}} onClick={this.addMessage}>Send Message</button>
+                        <input onChange={this.setFile} type="file" />
                     </form>
                 </div>
             </div>
