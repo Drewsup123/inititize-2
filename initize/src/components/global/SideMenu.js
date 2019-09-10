@@ -204,6 +204,7 @@ function SideMenu(props){
         firebase.database().ref('/invites/').child(key).set({
             roomId : props.selectedBoard.id,
             createdAt : Date.now(),
+            key : key,
         }).then(() => {
             setInviteCode(key)
         })
@@ -223,6 +224,11 @@ function SideMenu(props){
                         if(board){
                             console.log(board);
                             firebase.database().ref(`/users/${props.user.uid}/`).child('boards').push().set(board);
+                            firebase.database().ref(`/boards/${invite.roomId}`).child('users').push().set({
+                                username : props.user.username,
+                                profilePicture : props.user.profilePicture,
+                                uid : props.user.uid
+                            })
                             props.createdBoard(board)
                         }else{
                             alert("Board does not exist");
