@@ -7,7 +7,6 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import SettingsIcon from '@material-ui/icons/Settings';
 import MailIcon from '@material-ui/icons/Mail';
-import EditIcon from '@material-ui/icons/Edit';
 import TopNav from './AppBar';
 import Paper from '@material-ui/core/Paper'
 import Avatar from '@material-ui/core/Avatar';
@@ -20,7 +19,6 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Collapse from '@material-ui/core/Collapse';
-import StarBorder from '@material-ui/icons/StarBorder';
 import * as firebase from 'firebase';
 import {connect} from 'react-redux';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -28,14 +26,13 @@ import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
-import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 import ChatIcon from '@material-ui/icons/Chat';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import VerticalAlignBottomIcon from '@material-ui/icons/VerticalAlignBottom';
-import {createdBoard, changeSelected} from "../../redux/actions";
+import {createdBoard, changeSelected, getUsers} from "../../redux/actions";
 import {Link, Redirect} from "react-router-dom";
 import moment from 'moment';
 
@@ -103,6 +100,7 @@ function SideMenu(props){
 
     useEffect(() => {
         getSubBoards();
+        getBoardUsers();
     }, [props.selectedBoard]);
 
     const createBoard = () => {
@@ -145,6 +143,14 @@ function SideMenu(props){
                 setSubBoards(Object.values(snap.val()));
             }else{
                 setSubBoards([])
+            }
+        })
+    }
+
+    const getBoardUsers = () => {
+        firebase.database().ref(`/boards/${props.selectedBoard.id}`).child('users').once('value', snap => {
+            if(snap.val()){
+                props.getUsers(Object.values(snap.val()));
             }
         })
     }
@@ -224,7 +230,7 @@ function SideMenu(props){
                         if(board){
                             console.log(board);
                             firebase.database().ref(`/users/${props.user.uid}/`).child('boards').push().set(board);
-                            firebase.database().ref(`/boards/${invite.roomId}`).child('users').push().set({
+                            firebase.database().ref(`/boards/${invite.roomId}/users`).child(props.user.uid).push().set({
                                 username : props.user.username,
                                 profilePicture : props.user.profilePicture,
                                 uid : props.user.uid
@@ -345,11 +351,19 @@ function SideMenu(props){
                         </ListItem>
                         <List>
                             {
-                                props.selectedBoard.owner && props.selectedBoard.users 
+                                props.selectedBoard.owner && props.selectedBoardUsers 
                                 ? 
-                                <ListItem>
-                                    <ListItemText primary={`(Owner) ${props.selectedBoard.owner.username}`} />
-                                </ListItem>
+                                <React.Fragment>
+                                    <ListItem>
+                                        <ListItemText primary={`(Owner) ${props.selectedBoard.owner.username}`} />
+                                    </ListItem>
+                                    {props.selectedBoardUsers.map(user => 
+                                        <ListItem key={user.uid}>
+                                            {/* <ListItemIcon /> */}
+                                            <ListItemText primary={user.username} />
+                                        </ListItem>
+                                    )}
+                                </React.Fragment>
                                 :
                                 <ListItem>
                                     <ListItemText primary="No Users Yet" />
@@ -487,7 +501,8 @@ const mapStateToProps = state => {
         boards : state.boards,
         selectedBoard : state.selectedBoard,
         loggedIn : state.loggedIn,
+        selectedBoardUsers : state.selectedBoardUsers,
     }
 }
 
-export default connect(mapStateToProps, {createdBoard, changeSelected})(SideMenu)
+export default connect(mapStateToProps, {createdBoard, changeSelected, getUsers})(SideMenu)

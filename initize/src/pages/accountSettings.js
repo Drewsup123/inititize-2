@@ -6,6 +6,9 @@ import {signOut} from '../redux/actions';
 class AccountSettings extends React.Component{
     constructor(){
         super();
+        this.state = {
+            
+        }
     }
 
     signOut = () => {

@@ -1,5 +1,5 @@
 import React from 'react';
-import {sortableContainer, sortableElement, sortableHandle} from 'react-sortable-hoc';
+import { sortableContainer } from 'react-sortable-hoc';
 import arrayMove from 'array-move';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -8,23 +8,17 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import AddIcon from '@material-ui/icons/Add';
-import DeleteIcon from '@material-ui/icons/Delete';
-import EditIcon from '@material-ui/icons/Edit';
 import {connect} from 'react-redux';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from "@material-ui/core/Button";
 import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import * as firebase from 'firebase';
 import SortableItem from '../components/Dashboard/SortableItem';
-
-const DragHandle = sortableHandle(() => <span style={{cursor : "row-resize"}}>:::</span>);
 
 const SortableContainer = sortableContainer(({children}) => {
     return(
@@ -84,7 +78,7 @@ class Dashboard extends React.Component{
 
     componentDidMount(){
         // alert("mounted");
-        if(this.props.match.params.subBoardId != undefined){
+        if(this.props.match.params.subBoardId !== undefined){
             // console.log("param name", this.props.match.params.subBoardId);
             // firebase.database().ref(`/boardData/${this.props.selectedBoard.id}/${this.props.match.params.subBoardId}`).once('value').then(snap => {
             //     if(snap.val() && snap.val().tasks){
@@ -277,7 +271,8 @@ class Dashboard extends React.Component{
                                 onOpen={() => this.handleSelectOpen("user")}
                                 onClose={() => this.handleSelectClose("user")}
                             >
-                                <MenuItem value="testUser">TestUser</MenuItem>
+                                <MenuItem value="Owner">{this.props.selectedBoard.owner.username}</MenuItem>
+                                {this.props.boardUsers.map(user => <MenuItem value={user.username}>{user.username}</MenuItem>)}
                             </Select>
                             {/* Status */}
                             <Select 
@@ -326,8 +321,6 @@ class Dashboard extends React.Component{
                         </Button>
                         </DialogActions>
                     </Dialog>
-    
-    
                 </React.Fragment>
             );
         }
@@ -350,6 +343,7 @@ const mapStateToProps = state => {
         selectedBoard : state.selectedBoard,
         boards : state.boards,
         loggedIn : state.loggedIn,
+        boardUsers : state.selectedBoardUsers,
     }
 }
 

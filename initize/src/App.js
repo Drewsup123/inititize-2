@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 // Router Imports
-import { Route, withRouter, Redirect } from 'react-router-dom';
+import { Route, withRouter } from 'react-router-dom';
 import {connect} from 'react-redux';
 // Page Imports
 import LandingPage from './pages/LandingPage';
