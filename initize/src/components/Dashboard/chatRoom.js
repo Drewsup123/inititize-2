@@ -27,6 +27,11 @@ class ChatRoom extends React.Component{
 
     componentDidMount(){
         this.messageListener();
+        this.scrollToBottom();
+    }
+
+    componentDidUpdate(){
+        this.scrollToBottom();
     }
 
     messageListener = () => {
@@ -74,6 +79,10 @@ class ChatRoom extends React.Component{
         this.setState({[e.target.name] : e.target.value});
     }
 
+    scrollToBottom = () => {
+        this.messagesEnd.scrollIntoView({ behavior : "smooth" })
+    }
+
     render(){
         return(
             <div className="chatroom">
@@ -108,6 +117,7 @@ class ChatRoom extends React.Component{
                         :
                         null
                     }
+                    <div ref={el => {this.messagesEnd = el; }}></div>
                 </List>
                 <div style={{position : "absolute", top : "90vh", left : "30%", right : "20%", width:"50%", maxHeight : "10vh"}}>
                     <form onSubmit={this.addMessage} autoComplete="off" style={{ width : "100%",border : "1px solid black", display : "flex", flexWrap:"wrap"}}>
