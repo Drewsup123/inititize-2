@@ -1,6 +1,7 @@
 import React from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
+import Logo from '../../assets/logo.png';
 // import {connect} from 'react-redux'
 
 export default function TopNav(props) {
@@ -8,7 +9,7 @@ export default function TopNav(props) {
         <div>
             <AppBar position="static">
                 <Toolbar>
-                    <h1>Initize - </h1>
+                    <image src={Logo} alt="logo" style={{height : '80%', width : "200px", zIndex : 999999}}/>
                     <h1> {props.selectedBoard.boardName ? props.selectedBoard.boardName : "No Board Selected"}</h1>
                 </Toolbar>
             </AppBar>

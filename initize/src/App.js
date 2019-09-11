@@ -8,6 +8,7 @@ import LandingPage from './pages/LandingPage';
 import SignUp from './pages/SignUp';
 import Dashboard from './pages/Dashboard';
 import AccountSettings from './pages/accountSettings';
+import Error from './pages/error';
 //Component Imports
 import SideMenu from './components/global/SideMenu';
 import ChatRoom from './components/Dashboard/chatRoom';
@@ -17,6 +18,7 @@ function App(props) {
     <div className="App">
       <Route path="/" render={() => <SideMenu {...props}/>} />
       <Route exact path="/" render={() => <LandingPage />} />
+      {/* <Route render={() => <Error />} /> */}
       <Route path="/authenticate" render={() => <SignUp {...props}/>} />
       <div className="dashboard-content">
         <Route 

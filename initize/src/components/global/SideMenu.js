@@ -359,7 +359,7 @@ function SideMenu(props){
                                     </ListItem>
                                     {props.selectedBoardUsers.map(user => 
                                         <ListItem key={user.uid}>
-                                            {/* <ListItemIcon /> */}
+                                            <ListItemIcon><ChatIcon /></ListItemIcon>
                                             <ListItemText primary={user.username} />
                                         </ListItem>
                                     )}
