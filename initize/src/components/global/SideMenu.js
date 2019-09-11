@@ -271,7 +271,7 @@ function SideMenu(props){
                     <Tooltip key={board.id} title={board.boardName} placement="right">
                         <Avatar 
                             key={board.id}
-                            style={{cursor:"pointer"}} 
+                            style={board.id === props.selectedBoard.id ? {cursor:"pointer", border : "2px solid #00cdcd"} : {cursor:"pointer"}} 
                             className={classes.avatar}
                             onClick={() => changeSelected(board)}
                         >
