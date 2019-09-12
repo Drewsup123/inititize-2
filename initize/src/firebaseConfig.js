@@ -9,7 +9,7 @@ const firebaseConfig = {
   authDomain: "initize-2.firebaseapp.com",
   databaseURL: "https://initize-2.firebaseio.com",
   projectId: "initize-2",
-  storageBucket: "",
+  storageBucket: "initize-2.appspot.com",
   messagingSenderId: "216065183611",
   appId: "1:216065183611:web:47d24fb2a8dbec72"
 };

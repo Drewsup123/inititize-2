@@ -1,7 +1,7 @@
 import React from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import logo from '../../assets/logo.png';
+import logo from '../../assets/logoplain.png';
 // import {connect} from 'react-redux'
 
 export default function TopNav(props) {
