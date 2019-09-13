@@ -28,6 +28,7 @@ class ChatRoom extends React.Component{
             searchResults : [],
             searchLoading : false,
             file : null,
+            fileType : null,
             fileSelectOpen : false,
         }
     }
@@ -76,25 +77,28 @@ class ChatRoom extends React.Component{
 
     uploadFile = () => {
         const { file } = this.state;
+        const metadata = { contentType : file.type };
         let uploadTask = firebase.storage()
         .ref(`/chatroomFiles/${this.props.selectedBoard.id}`)
         .child(`${file.lastModified}${file.name}`)
-        .put(this.state.file);
+        .put(this.state.file, metadata);
         uploadTask.on('state_changed', 
             snapshot => {
                 let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
             },
             error => {
-                alert("There was an error uploading the image");
+                alert("There was an error uploading the image", error);
             }
             ,() => {
-                uploadTask.ref.getDownloadURL().then(downloadURL => {
+                uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
                     console.log(downloadURL);
                     firebase.database()
                     .ref(`/boardData/${this.props.selectedBoard.id}/${this.props.match.params.subBoardId}`)
                     .child('messages')
                     .push().set({
                         file : downloadURL,
+                        type : file.type,
+                        name : file.name,
                         user : {
                             username : this.props.user.username,
                             profilePicture : this.props.user.profilePicture,
@@ -112,7 +116,7 @@ class ChatRoom extends React.Component{
     }
 
     handleFileSelect = e => {
-        console.log(e.target.files[0].name);
+        console.log(e.target.files[0]);
         this.setState({ file : e.target.files[0] });
     }
 
@@ -139,17 +143,23 @@ class ChatRoom extends React.Component{
                                         <Avatar alt={message.user.username} src={message.user.profilePicture} />
                                         </ListItemAvatar>
                                         <ListItemText
-                                        primary={message.title}
+                                        primary={message.file ? `${message.title ? message.title + "-" : ""} ${message.user.username}` : message.title}
                                         secondary={
                                             <React.Fragment>
-                                            <Typography
-                                                component="span"
-                                                variant="body2"
-                                                color="textPrimary"
-                                            >
-                                                {message.user.username}
-                                            </Typography>
-                                                - {message.text}
+                                                <Typography
+                                                    component="span"
+                                                    variant="body2"
+                                                    color="textPrimary"
+                                                >
+                                                    {message.file ? "" : message.user.username}
+                                                </Typography>
+                                                -   {
+                                                    message.text 
+                                                    ? message.text 
+                                                    : message.type === "image/jpeg" || message.type === "image/png" || message.type === "image/jpg" 
+                                                        ? <img style={{width : "50%"}} src={message.file} alt="file" /> 
+                                                        : <button>Download {message.name}</button>
+                                                    }
                                             </React.Fragment>
                                         }
                                         />
