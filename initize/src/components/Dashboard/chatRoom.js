@@ -128,6 +128,17 @@ class ChatRoom extends React.Component{
         this.setState({ fileSelectOpen : state });
     }
 
+    // downloadFile = (e, url) => {
+    //     e.stopPropagation();
+    //     var xhr = new XMLHttpRequest();
+    //     xhr.responseType = 'blob';
+    //     xhr.onload = function(event) {
+    //         var blob = xhr.response;
+    //     };
+    //     xhr.open('GET', url);
+    //     xhr.send();
+    // }
+
     render(){
         return(
             <React.Fragment>
@@ -158,7 +169,7 @@ class ChatRoom extends React.Component{
                                                     ? message.text 
                                                     : message.type === "image/jpeg" || message.type === "image/png" || message.type === "image/jpg" 
                                                         ? <img style={{width : "50%"}} src={message.file} alt="file" /> 
-                                                        : <button>Download {message.name}</button>
+                                                        : <a href={message.file} ><embed src={message.file} style={{width : "50%", height : "750px"}} type="application/pdf" /></a>
                                                     }
                                             </React.Fragment>
                                         }
@@ -206,7 +217,7 @@ class ChatRoom extends React.Component{
                         <DialogContentText>
                             Upload a file to chat. Supported files PNG, JPG, PDF. (More coming soon)
                         </DialogContentText>
-                        <input onChange={this.handleFileSelect} type="file" />
+                        <input accept="image/*, application/pdf" onChange={this.handleFileSelect} type="file" />
                     </DialogContent>
                     <DialogActions>
                     <Button onClick={() => this.handleFileSelectState(false)} color="primary">
