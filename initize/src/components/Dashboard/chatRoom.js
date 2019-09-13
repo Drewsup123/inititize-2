@@ -76,7 +76,7 @@ class ChatRoom extends React.Component{
 
     uploadFile = () => {
         const { file } = this.state;
-        const uploadTask = firebase.storage()
+        let uploadTask = firebase.storage()
         .ref(`/chatroomFiles/${this.props.selectedBoard.id}`)
         .child(`${file.lastModified}${file.name}`)
         .put(this.state.file);
@@ -90,7 +90,18 @@ class ChatRoom extends React.Component{
             ,() => {
                 uploadTask.ref.getDownloadURL().then(downloadURL => {
                     console.log(downloadURL);
-                    firebase.database().ref(`/boardData/${this.props.selectedBoard.id}/${this.props.match.params.subBoardId}`)
+                    firebase.database()
+                    .ref(`/boardData/${this.props.selectedBoard.id}/${this.props.match.params.subBoardId}`)
+                    .child('messages')
+                    .push().set({
+                        file : downloadURL,
+                        user : {
+                            username : this.props.user.username,
+                            profilePicture : this.props.user.profilePicture,
+                            uid : this.props.user.uid,
+                        }
+                    })
+                    this.setState({ file : null, fileSelectOpen : false });
                 })
             }
         )
