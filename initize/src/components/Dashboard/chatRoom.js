@@ -30,6 +30,7 @@ class ChatRoom extends React.Component{
             file : null,
             fileType : null,
             fileSelectOpen : false,
+            fileUploadinProgress : false,
         }
     }
 
@@ -76,6 +77,7 @@ class ChatRoom extends React.Component{
     }
 
     uploadFile = () => {
+        this.setState({ fileUploadinProgress : true})
         const { file } = this.state;
         const metadata = { contentType : file.type };
         let uploadTask = firebase.storage()
@@ -88,6 +90,7 @@ class ChatRoom extends React.Component{
             },
             error => {
                 alert("There was an error uploading the image", error);
+                this.setState({ fileUploadinProgress : false})
             }
             ,() => {
                 uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
@@ -105,7 +108,7 @@ class ChatRoom extends React.Component{
                             uid : this.props.user.uid,
                         }
                     })
-                    this.setState({ file : null, fileSelectOpen : false });
+                    this.setState({ file : null, fileSelectOpen : false, fileUploadinProgress : false });
                 })
             }
         )
@@ -223,7 +226,7 @@ class ChatRoom extends React.Component{
                     <Button onClick={() => this.handleFileSelectState(false)} color="primary">
                         Cancel
                     </Button>
-                    <Button disabled={this.state.file === null} onClick={this.uploadFile} color="primary">
+                    <Button disabled={this.state.file === null || this.state.fileUploadinProgress} onClick={this.uploadFile} color="primary">
                         Upload To Channel
                     </Button>
                     </DialogActions>
