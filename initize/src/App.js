@@ -9,6 +9,7 @@ import SignUp from './pages/SignUp';
 import Dashboard from './pages/Dashboard';
 import AccountSettings from './pages/accountSettings';
 import Error from './pages/error';
+import BoardSettings from './pages/BoardSettings'
 //Component Imports
 import SideMenu from './components/global/SideMenu';
 import ChatRoom from './components/Dashboard/chatRoom';
@@ -34,13 +35,25 @@ function App(props) {
           />
           <Route path="/dashboard/:id/chatroom/:subBoardId?" 
             render={(props) => 
-            <ChatRoom 
+            <BoardSettings 
               key={props.match.params.subBoardId 
                 ? props.match.params.subBoardId
                 : props.match.params.id}
                 {...props}
             />
           }
+          />
+
+        <Route 
+          exact
+          path="/dashboard/:id/board-settings" 
+          render={(props) => 
+            <Dashboard 
+              key={props.match.params.subBoardId 
+              ? props.match.params.subBoardId
+              : props.match.params.id} 
+              {...props}
+            />} 
           />
         <Route path="/account-settings" render={props => <AccountSettings {...props}/>} />
       </div>
