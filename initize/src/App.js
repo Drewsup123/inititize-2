@@ -35,7 +35,7 @@ function App(props) {
           />
           <Route path="/dashboard/:id/chatroom/:subBoardId?" 
             render={(props) => 
-            <BoardSettings 
+            <ChatRoom 
               key={props.match.params.subBoardId 
                 ? props.match.params.subBoardId
                 : props.match.params.id}
@@ -46,9 +46,9 @@ function App(props) {
 
         <Route 
           exact
-          path="/dashboard/:id/board-settings" 
+          path="/board-settings/:id" 
           render={(props) => 
-            <Dashboard 
+            <BoardSettings 
               key={props.match.params.subBoardId 
               ? props.match.params.subBoardId
               : props.match.params.id} 

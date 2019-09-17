@@ -301,10 +301,12 @@ function SideMenu(props){
                     {
                     Object.keys(props.selectedBoard).length && props.selectedBoard.owner.uid === props.user.uid 
                     ?
-                        <Button>
-                            <SettingsIcon />
-                            Board Settings
-                        </Button>
+                        <Link to={`/board-settings/${props.selectedBoard.id}`}>
+                            <Button>
+                                <SettingsIcon />
+                                Board Settings
+                            </Button>
+                        </Link>
                     :
                         null
                     }

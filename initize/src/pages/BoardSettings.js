@@ -1,10 +1,9 @@
 import React from 'react';
 
-export default class BoardSettings {
+export default class BoardSettings extends React.Component {
     constructor(){
         super();
         this.state = {
-
         }
     }
 
@@ -12,6 +11,7 @@ export default class BoardSettings {
         return(
             <div>
                 <h1>Board Settings</h1>
+                <h2>{this.props.match.params.id}</h2>
             </div>
         )
     }
