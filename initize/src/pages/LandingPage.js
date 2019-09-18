@@ -17,6 +17,7 @@ export default function LandingPage(){
                     <img src={Logo} alt="logo" style={styles.blobImg} />
                 </Blob>
             </div>
+            <h3 style={{color : "#CC5803"}}>This application is still in production.</h3>
         </div>
     )
 }
