@@ -19,3 +19,15 @@
         width : 74.5%
     }
 }
+@media(max-width : 1000px){
+    .dashboard-content{
+        margin-left : 35.5%;
+        width : 64.5%
+    }
+}
+@media(max-width : 750px){
+    .dashboard-content{
+        margin-left : 40.5%;
+        width : 59.5%
+    }
+}

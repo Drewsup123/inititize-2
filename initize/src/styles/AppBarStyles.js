@@ -14,11 +14,6 @@ const useStyles = makeStyles({
         width : "100px", 
         height : "100%",
     },
-    '@media(max-width : 1200px)' : {
-        toolbar : {
-            backgroundColor : "red"
-        }
-    }
 });
 
 export default useStyles;

@@ -35,50 +35,7 @@ import VerticalAlignBottomIcon from '@material-ui/icons/VerticalAlignBottom';
 import {createdBoard, changeSelected, getUsers} from "../../redux/actions";
 import {Link, Redirect} from "react-router-dom";
 import moment from 'moment';
-
-const useStyles = makeStyles(theme => ({
-    root: {
-        display: 'flex',
-    },
-    sidemenu : {
-        height : "100vh",
-        width : "12%",
-        position : "fixed",
-        backgroundColor : "rgba(0,0,0,0.4)",
-        display : "flex",
-        flexDirection : "row",
-        paddingTop: "15px",
-    },
-    toolbar: {
-        display : "flex",
-        alignItems : "center",
-        justifyContent : "center"
-    },
-    avatar:{
-        backgroundColor:"blue"
-    },
-    sidemenuBoards:{
-        width : "15%",
-        borderRight : "2px solid grey",
-        height : "100%",
-    },
-    sidemenuContent:{
-        width:"85%",
-        display:"flex",
-        flexDirection : "column",
-        alignItems : "center"
-    },
-    '@media(max-width : 1700px)' : {
-        sidemenu : {
-            width : "18%"
-        }
-    },
-    '@media(max-width : 1200px)' : {
-        sidemenu : {
-            width : "25%"
-        }
-    },
-}));
+import useStyles from '../../styles/SideMenuStyles';
 
 function SideMenu(props){
     const classes = useStyles();
