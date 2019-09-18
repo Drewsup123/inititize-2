@@ -1,10 +1,11 @@
+import {STARK, VOID, JEWEL} from './variables';
 const styles = {
     container : {
         boxSizing : "border-box",
         display : "flex",
         flexDirection : "column",
         alignItems : "center",
-        backgroundColor : "#006887",
+        backgroundColor : JEWEL,
         padding : "20px",
         height : "100vh"
     },
@@ -14,7 +15,7 @@ const styles = {
         justifyContent : "flex-end",
     },
     topHeaderBtn : {
-        color : "white",
+        color : STARK,
         textDecoration : "none",
         '&:hover' : {
             color : "black",
@@ -28,7 +29,7 @@ const styles = {
     },
     blob : {
         zIndex: 100,
-        backgroundColor: 'black',
+        backgroundColor: VOID,
         color: 'blue',
         fontSize: '50vh',
         width : "25vw",
