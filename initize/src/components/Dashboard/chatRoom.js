@@ -14,6 +14,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 import {connect} from 'react-redux';
+import Message from './Message';
 
 class ChatRoom extends React.Component{
     constructor(){
@@ -31,6 +32,7 @@ class ChatRoom extends React.Component{
             fileType : null,
             fileSelectOpen : false,
             fileUploadinProgress : false,
+            comments : [],
         }
     }
 
@@ -67,7 +69,8 @@ class ChatRoom extends React.Component{
                     username : this.props.user.username,
                     profilePicture : this.props.user.profilePicture,
                     uid : this.props.user.uid,
-                }
+                },
+                comments : [],
             })
             this.setState({newMessageTitle : "", newMessage : ""})
         }else{
@@ -106,7 +109,8 @@ class ChatRoom extends React.Component{
                             username : this.props.user.username,
                             profilePicture : this.props.user.profilePicture,
                             uid : this.props.user.uid,
-                        }
+                        },
+                        comments : [],
                     })
                     this.setState({ file : null, fileSelectOpen : false, fileUploadinProgress : false });
                 })
@@ -145,39 +149,41 @@ class ChatRoom extends React.Component{
     render(){
         return(
             <React.Fragment>
-                <div className="chatroom">
-                    <List style={{maxHeight : "85vh", overflowY:"scroll"}}>
+                <div className="chatroom" style={{display : "flex", width : "100%"}}>
+                    <div>
+                    <List style={{maxHeight : "85vh", overflowY:"scroll", width : "75%"}}>
                         {
                             this.state.messages.length 
                             ? 
                             this.state.messages.map(message => {
                                 return(
-                                    <ListItem alignItems="flex-start">
-                                        <ListItemAvatar>
-                                        <Avatar alt={message.user.username} src={message.user.profilePicture} />
-                                        </ListItemAvatar>
-                                        <ListItemText
-                                        primary={message.file ? `${message.title ? message.title + "-" : ""} ${message.user.username}` : message.title}
-                                        secondary={
-                                            <React.Fragment>
-                                                <Typography
-                                                    component="span"
-                                                    variant="body2"
-                                                    color="textPrimary"
-                                                >
-                                                    {message.file ? "" : message.user.username}
-                                                </Typography>
-                                                -   {
-                                                    message.text 
-                                                    ? message.text 
-                                                    : message.type === "image/jpeg" || message.type === "image/png" || message.type === "image/jpg" 
-                                                        ? <img style={{width : "50%"}} src={message.file} alt="file" /> 
-                                                        : <a href={message.file} ><embed src={message.file} style={{width : "50%", height : "750px"}} type="application/pdf" /></a>
-                                                    }
-                                            </React.Fragment>
-                                        }
-                                        />
-                                    </ListItem>
+                                    // <ListItem alignItems="flex-start">
+                                    //     <ListItemAvatar>
+                                    //     <Avatar alt={message.user.username} src={message.user.profilePicture} />
+                                    //     </ListItemAvatar>
+                                    //     <ListItemText
+                                    //     primary={message.file ? `${message.title ? message.title + "-" : ""} ${message.user.username}` : message.title}
+                                    //     secondary={
+                                    //         <React.Fragment>
+                                    //             <Typography
+                                    //                 component="span"
+                                    //                 variant="body2"
+                                    //                 color="textPrimary"
+                                    //             >
+                                    //                 {message.file ? "" : message.user.username}
+                                    //             </Typography>
+                                    //             -   {
+                                    //                 message.text 
+                                    //                 ? message.text 
+                                    //                 : message.type === "image/jpeg" || message.type === "image/png" || message.type === "image/jpg" 
+                                    //                     ? <img style={{width : "50%"}} src={message.file} alt="file" /> 
+                                    //                     : <a href={message.file} ><embed src={message.file} style={{width : "50%", height : "750px"}} type="application/pdf" /></a>
+                                    //                 }
+                                    //         </React.Fragment>
+                                    //     }
+                                    //     />
+                                    // </ListItem>
+                                    <Message message={message} />
                                 );
                             })
                             :
@@ -185,7 +191,7 @@ class ChatRoom extends React.Component{
                         }
                         <div ref={el => {this.messagesEnd = el; }}></div>
                     </List>
-                    <div style={{position : "absolute", top : "90vh", left : "30%", right : "20%", width:"50%", maxHeight : "10vh"}}>
+                    <div style={{position : "fixed", width:"75%", maxHeight : "10vh"}}>
                         <form onSubmit={this.addMessage} autoComplete="off" style={{ width : "100%",border : "1px solid black", display : "flex", flexWrap:"wrap"}}>
                             <TextField
                                 id="outlined-name"
@@ -210,6 +216,57 @@ class ChatRoom extends React.Component{
                             <button style={{width : "10%"}} onClick={this.addMessage}>Send Message</button>
                             <Button color="primary" onClick={() => this.handleFileSelectState(true)}>Upload File</Button>
                         </form>
+                    </div>
+                    </div>
+                    {/* <div style={{position : "absolute", top : "90vh", left : "30%", right : "20%", width:"50%", maxHeight : "10vh"}}>
+                        <form onSubmit={this.addMessage} autoComplete="off" style={{ width : "100%",border : "1px solid black", display : "flex", flexWrap:"wrap"}}>
+                            <TextField
+                                id="outlined-name"
+                                label="Message Title (optional)"
+                                name="newMessageTitle"
+                                value={this.state.newMessageTitle}
+                                onChange={this.handleChange}
+                                margin="normal"
+                                variant="outlined"
+                                style={{width: "20%"}}
+                            />
+                            <TextField
+                                id="outlined-name"
+                                label="Message Text"
+                                name="newMessage"
+                                value={this.state.newMessage}
+                                onChange={this.handleChange}
+                                margin="normal"
+                                variant="outlined"
+                                style={{width: "70%"}}
+                            />
+                            <button style={{width : "10%"}} onClick={this.addMessage}>Send Message</button>
+                            <Button color="primary" onClick={() => this.handleFileSelectState(true)}>Upload File</Button>
+                        </form>
+                    </div> */}
+
+                    <div style={{borderLeft : "1px solid black", width : "50%"}}>
+                        <h1>Comments: </h1>
+                        <TextField
+                                id="outlined-name"
+                                label="Message Title (optional)"
+                                name="newMessageTitle"
+                                value={this.state.newMessageTitle}
+                                onChange={this.handleChange}
+                                margin="normal"
+                                variant="outlined"
+                                style={{width: "20%"}}
+                            />
+                            <TextField
+                                id="outlined-name"
+                                label="Message Text"
+                                name="newMessage"
+                                value={this.state.newMessage}
+                                onChange={this.handleChange}
+                                margin="normal"
+                                variant="outlined"
+                                style={{width: "70%"}}
+                            />
                     </div>
                 </div>
 
