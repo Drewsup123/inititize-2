@@ -119,19 +119,32 @@ function SideMenu(props){
         props.history.push('/dashboard/' + board.id);
     }
 
+    const checkForDuplicate = name => {
+        for(let i = 0; i < subBoards.length; i++){
+            if(subBoards[i].name === name){
+                return false;
+            }
+        }
+        return true;
+    }
+
     const addSubBoard = () => {
         if(subBoardName && subBoardType === "Board"){
-            firebase.database().ref(`/boardData/${props.selectedBoard.id}/${subBoardName}`).set({
-                name : subBoardName,
-                type : "board",
-                tasks : []
-            }).then(() => {
-                setSubBoardOpen(false);
-                getSubBoards();
-            })
-            .catch(err => {
-                alert("There was an error creating the sub-board please try again.")
-            })
+            if(checkForDuplicate(subBoardName)){
+                firebase.database().ref(`/boardData/${props.selectedBoard.id}/${subBoardName}`).set({
+                    name : subBoardName,
+                    type : "board",
+                    tasks : []
+                }).then(() => {
+                    setSubBoardOpen(false);
+                    getSubBoards();
+                })
+                .catch(err => {
+                    alert("There was an error creating the sub-board please try again.")
+                })
+            }else{
+                alert("Sub board with that name already exists.")
+            }
         }
         else if(subBoardName && subBoardType === "Chatroom"){
             firebase.database().ref(`/boardData/${props.selectedBoard.id}/${subBoardName}`).set({
