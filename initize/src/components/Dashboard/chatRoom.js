@@ -33,6 +33,7 @@ class ChatRoom extends React.Component{
             fileSelectOpen : false,
             fileUploadinProgress : false,
             comments : [],
+            messageId : "",
         }
     }
 
@@ -135,6 +136,10 @@ class ChatRoom extends React.Component{
         this.setState({ fileSelectOpen : state });
     }
 
+    updateComments = (comments, messageId) => {
+        this.setState({ comments : comments, messageId : messageId });
+    }
+
     // downloadFile = (e, url) => {
     //     e.stopPropagation();
     //     var xhr = new XMLHttpRequest();
@@ -150,40 +155,14 @@ class ChatRoom extends React.Component{
         return(
             <React.Fragment>
                 <div className="chatroom" style={{display : "flex", width : "100%"}}>
-                    <div>
-                    <List style={{maxHeight : "85vh", overflowY:"scroll", width : "75%"}}>
+                    <div style={{width : "75%"}}>
+                    <List style={{height : "85vh", overflowY:"scroll", width : "100%"}}>
                         {
                             this.state.messages.length 
                             ? 
                             this.state.messages.map(message => {
                                 return(
-                                    // <ListItem alignItems="flex-start">
-                                    //     <ListItemAvatar>
-                                    //     <Avatar alt={message.user.username} src={message.user.profilePicture} />
-                                    //     </ListItemAvatar>
-                                    //     <ListItemText
-                                    //     primary={message.file ? `${message.title ? message.title + "-" : ""} ${message.user.username}` : message.title}
-                                    //     secondary={
-                                    //         <React.Fragment>
-                                    //             <Typography
-                                    //                 component="span"
-                                    //                 variant="body2"
-                                    //                 color="textPrimary"
-                                    //             >
-                                    //                 {message.file ? "" : message.user.username}
-                                    //             </Typography>
-                                    //             -   {
-                                    //                 message.text 
-                                    //                 ? message.text 
-                                    //                 : message.type === "image/jpeg" || message.type === "image/png" || message.type === "image/jpg" 
-                                    //                     ? <img style={{width : "50%"}} src={message.file} alt="file" /> 
-                                    //                     : <a href={message.file} ><embed src={message.file} style={{width : "50%", height : "750px"}} type="application/pdf" /></a>
-                                    //                 }
-                                    //         </React.Fragment>
-                                    //     }
-                                    //     />
-                                    // </ListItem>
-                                    <Message message={message} />
+                                    <Message message={message} updateComments={this.updateComments} />
                                 );
                             })
                             :
@@ -191,8 +170,8 @@ class ChatRoom extends React.Component{
                         }
                         <div ref={el => {this.messagesEnd = el; }}></div>
                     </List>
-                    <div style={{position : "fixed", width:"75%", maxHeight : "10vh"}}>
-                        <form onSubmit={this.addMessage} autoComplete="off" style={{ width : "100%",border : "1px solid black", display : "flex", flexWrap:"wrap"}}>
+                    <div style={{width:"100%", height : "10vh"}}>
+                        <form onSubmit={this.addMessage} autoComplete="off" style={{ width : "100%",borderTop : "1px solid black", display : "flex", flexWrap:"wrap"}}>
                             <TextField
                                 id="outlined-name"
                                 label="Message Title (optional)"
@@ -245,8 +224,21 @@ class ChatRoom extends React.Component{
                         </form>
                     </div> */}
 
-                    <div style={{borderLeft : "1px solid black", width : "50%"}}>
+                    <div style={{borderLeft : "1px solid black", width : "25%"}}>
                         <h1>Comments: </h1>
+                        <List>
+                            {this.state.comments.map(comment => 
+                                <ListItem>
+                                    <ListItemAvatar>
+                                        <Avatar alt={comment.user.username} src={comment.user.profilePicture} />
+                                    </ListItemAvatar>
+                                    <ListItemText 
+                                        primary={comment.title || ""}
+                                        secondary={comment.text}
+                                    />
+                                </ListItem>
+                            )}
+                        </List>
                         <TextField
                                 id="outlined-name"
                                 label="Message Title (optional)"
