@@ -44,7 +44,7 @@ class Message extends React.Component{
                         </div>
                         {message.comments && message.comments.length 
                             ?       
-                            <Button variant="contained" style={{width : "200px"}}>
+                            <Button onClick={() => this.props.updateComments(message.comments)} variant="contained" style={{width : "200px"}}>
                                 {message.comments.length} Reply.
                             </Button> 
                             : 
