@@ -235,8 +235,8 @@ function SideMenu(props){
             <TopNav selectedBoard={props.selectedBoard} />
             <div className={classes.sidemenu}>
                 <div className={classes.sidemenuBoards}>
-                <Avatar onClick={() => setOpen(true)} style={{backgroundColor:"grey", cursor : "pointer"}} ><AddIcon /></Avatar>
-                <Avatar onClick={() => setJoinModalOpen(true)} style={{backgroundColor:"grey", cursor : "pointer"}}><VerticalAlignBottomIcon /></Avatar>
+                <Tooltip title="Create a board" placement="right"><Avatar onClick={() => setOpen(true)} style={{backgroundColor:"grey", cursor : "pointer"}} ><AddIcon /></Avatar></Tooltip>
+                <Tooltip title="Join a board" placement="right"><Avatar onClick={() => setJoinModalOpen(true)} style={{backgroundColor:"grey", cursor : "pointer"}}><VerticalAlignBottomIcon /></Avatar></Tooltip>
                     {boards.map(board => 
                     <Tooltip key={board.id} title={board.boardName} placement="right">
                         <Avatar 
